@@ -1,5 +1,6 @@
 package com.example.stylespo;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.button.MaterialButton;
@@ -12,6 +13,7 @@ import android.view.View;
 import androidx.core.view.WindowCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -19,9 +21,11 @@ import com.example.stylespo.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,9 +45,14 @@ public class MainActivity extends AppCompatActivity {
         log_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(username.getText().toString().equals("admin") && password.getText().equals("admin")){
+                boolean u = username.getText().toString().equals("admin");
+                boolean p =  password.getText().equals("admin");
+                if(username.getText().toString().equals("admin") && password.getText().toString().equals("admin")){
                     //correct
                     Toast.makeText(MainActivity.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
+                    // FirstFragment f = new FirstFragment();
+                    // getSupportFragmentManager().beginTransaction().replace(R.id.username,f).commit();
+
                 }else{
                     //incorrect
                     Toast.makeText(MainActivity.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
