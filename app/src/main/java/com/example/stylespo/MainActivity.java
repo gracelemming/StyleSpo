@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         TextView username = findViewById(R.id.username);
         TextView password = findViewById(R.id.password);
 
-        MaterialButton log_in_button = (MaterialButton) findViewById(R.id.log_in_button);
+        Button log_in_button = (Button) findViewById(R.id.log_in_button);
 
         log_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
