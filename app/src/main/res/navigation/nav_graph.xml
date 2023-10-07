@@ -37,6 +37,17 @@
             app:destination="@id/ThirdFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/ThirdFragment"
+        android:name="com.example.stylespo.ThirdFragment"
+        android:label="Third Fragment"
+        tools:layout="@layout/fragment_third">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_ThirdFragment"
+            app:destination="@id/ThirdFragment" />
+    </fragment>
+
 
 
 </navigation>

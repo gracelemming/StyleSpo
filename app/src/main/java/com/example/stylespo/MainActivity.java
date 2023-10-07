@@ -25,10 +25,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    public Button button;
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
@@ -50,9 +51,12 @@ public class MainActivity extends AppCompatActivity {
                 if(username.getText().toString().equals("admin") && password.getText().toString().equals("admin")){
                     //correct
                     Toast.makeText(MainActivity.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
-                    // FirstFragment f = new FirstFragment();
+                    //FirstFragment f = new FirstFragment();
                     // getSupportFragmentManager().beginTransaction().replace(R.id.username,f).commit();
-
+                    //Intent intent = new Intent(MainActivity.this, FirstFragment.class);
+                   // startActivity(intent);
+                    NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_view);
+                    navController.navigate(R.id.action_FirstFragment_to_SecondFragment);
                 }else{
                     //incorrect
                     Toast.makeText(MainActivity.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
