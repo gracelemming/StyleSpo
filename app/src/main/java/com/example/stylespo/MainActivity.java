@@ -53,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
                     //FirstFragment f = new FirstFragment();
                     // getSupportFragmentManager().beginTransaction().replace(R.id.username,f).commit();
-                    //Intent intent = new Intent(MainActivity.this, FirstFragment.class);
+                    //Intent intent = new Intent(MainActivity.this, NavigationBar.class);
                    // startActivity(intent);
                     NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_view);
-                    navController.navigate(R.id.action_FirstFragment_to_SecondFragment);
+                    navController.navigate(R.id.container);
                 }else{
                     //incorrect
                     Toast.makeText(MainActivity.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();

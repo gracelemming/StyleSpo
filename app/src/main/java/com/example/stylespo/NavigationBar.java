@@ -22,7 +22,7 @@ public class NavigationBar extends AppCompatActivity {
 
         binding = ActivityNavigationBarBinding.inflate(getLayoutInflater());
         //setContentView(binding.getRoot());
-        setContentView(R.layout.fragment_first);
+        setContentView(R.layout.activity_navigation_bar);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
