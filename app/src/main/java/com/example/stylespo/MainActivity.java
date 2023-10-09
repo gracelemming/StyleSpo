@@ -3,17 +3,13 @@ package com.example.stylespo;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
 
-import androidx.core.view.WindowCompat;
+
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -21,11 +17,9 @@ import com.example.stylespo.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Intent;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -48,24 +42,24 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 boolean u = username.getText().toString().equals("admin");
                 boolean p =  password.getText().equals("admin");
+
                 if(username.getText().toString().equals("admin") && password.getText().toString().equals("admin")){
                     //correct
                     Toast.makeText(MainActivity.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
                     //FirstFragment f = new FirstFragment();
                     // getSupportFragmentManager().beginTransaction().replace(R.id.username,f).commit();
-                    //Intent intent = new Intent(MainActivity.this, NavigationBar.class);
-                   // startActivity(intent);
-                    NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_view);
-                    navController.navigate(R.id.container);
+                    Intent intent = new Intent(MainActivity.this, HomePage.class);
+                    startActivity(intent);
+
+                   // NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_view);
+                   // navController.navigate(R.id.container)
                 }else{
                     //incorrect
                     Toast.makeText(MainActivity.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
                 }
             }
-        });
 
-//        binding = ActivityMainBinding.inflate(getLayoutInflater());
-//        setContentView(binding.getRoot());
+        });
 
 //        setSupportActionBar(binding.toolbar);
 //
