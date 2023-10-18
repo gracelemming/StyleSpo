@@ -1,42 +1,35 @@
-package com.example.stylespo;
+package com.example.stylespo
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent
+import android.os.Bundle
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
-import android.os.Bundle;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import android.content.Intent;
-import android.os.Bundle;
-
-public class HomePage extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_page);
-
-        BottomNavigationView bottomNavigationView= findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.bottom_home);
-
-        bottomNavigationView.setOnItemSelectedListener(item ->{
-            int itemId = item.getItemId();
+class HomePage : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_home_page)
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.selectedItemId = R.id.bottom_home
+        bottomNavigationView.setOnItemSelectedListener { item: MenuItem ->
+            val itemId = item.itemId
             if (itemId == R.id.bottom_home) {
-                return true;
+                return@setOnItemSelectedListener true
             } else if (itemId == R.id.bottom_add) {
-                startActivity(new Intent(getApplicationContext(), Add.class));
-                finish();
-                return true;
+                startActivity(Intent(applicationContext, Add::class.java))
+                finish()
+                return@setOnItemSelectedListener true
             } else if (itemId == R.id.bottom_discover) {
-                startActivity(new Intent(getApplicationContext(), Discovery.class));
-                finish();
-                return true;
+                startActivity(Intent(applicationContext, Discovery::class.java))
+                finish()
+                return@setOnItemSelectedListener true
             } else if (itemId == R.id.bottom_profile) {
-                startActivity(new Intent(getApplicationContext(), Profile.class));
-                finish();
-                return true;
+                startActivity(Intent(applicationContext, Profile::class.java))
+                finish()
+                return@setOnItemSelectedListener true
             }
-            return false;
-        });
-
+            false
+        }
     }
 }

@@ -1,48 +1,33 @@
-package com.example.stylespo;
+package com.example.stylespo
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import com.example.stylespo.databinding.FragmentSecondBinding
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
-import com.example.stylespo.databinding.FragmentSecondBinding;
-
-public class SecondFragment extends Fragment {
-
-    private FragmentSecondBinding binding;
-
-    @Override
-    public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState
-    ) {
-
-        binding = FragmentSecondBinding.inflate(inflater, container, false);
-        return binding.getRoot();
-
+class SecondFragment : Fragment() {
+    private var binding: FragmentSecondBinding? = null
+    override fun onCreateView(
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSecondBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                NavHostFragment.findNavController(SecondFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
-            }
-        });
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding!!.buttonSecond.setOnClickListener {
+            NavHostFragment.findNavController(this@SecondFragment)
+                    .navigate(R.id.action_SecondFragment_to_FirstFragment)
+        }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
-
 }
