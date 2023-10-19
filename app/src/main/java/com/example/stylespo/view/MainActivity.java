@@ -1,4 +1,4 @@
-package com.example.stylespo;
+package com.example.stylespo.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,13 +8,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
 
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.stylespo.HomePage;
+import com.example.stylespo.R;
 import com.example.stylespo.databinding.ActivityMainBinding;
-
+import com.example.stylespo.viewmodel.MainViewModel;
+import com.example.stylespo.model.User;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -25,47 +33,21 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
     public Button button;
     private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
+    private ActivityMainBinding activityMainBinding;
+
+    private MainViewModel mVModel;
+    private User userModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+     //   activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        if(savedInstanceState == null) {
+            FragmentManager fm = getSupportFragmentManager();
+            Fragment fragment = new SignUpFragment();
+            fm.beginTransaction().add(R.id.signUp_frag_container, fragment).commit();
+        }
 
-        TextView username = findViewById(R.id.username);
-        TextView password = findViewById(R.id.password);
-
-        Button log_in_button = (Button) findViewById(R.id.log_in_button);
-
-        log_in_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean u = username.getText().toString().equals("admin");
-                boolean p =  password.getText().equals("admin");
-
-                if(username.getText().toString().equals("admin") && password.getText().toString().equals("admin")){
-                    //correct
-                    Toast.makeText(MainActivity.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
-                    //FirstFragment f = new FirstFragment();
-                    // getSupportFragmentManager().beginTransaction().replace(R.id.username,f).commit();
-                    Intent intent = new Intent(MainActivity.this, HomePage.class);
-                    startActivity(intent);
-
-                   // NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_view);
-                   // navController.navigate(R.id.container)
-                }else{
-                    //incorrect
-                    Toast.makeText(MainActivity.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-        });
-
-//        setSupportActionBar(binding.toolbar);
-//
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-//        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 //
 //        binding.fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
