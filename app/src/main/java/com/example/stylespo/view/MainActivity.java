@@ -1,4 +1,4 @@
-package com.example.stylespo;
+package com.example.stylespo.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +12,20 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import com.example.stylespo.HomePage;
+import com.example.stylespo.R;
+import com.example.stylespo.viewmodel.SignUpViewModel;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.DataBindingUtil;
 
+import android.text.TextUtils;
+import android.util.Patterns;
+import com.example.stylespo.R;
+import com.example.stylespo.viewmodel.SignUpViewModel;
 import com.example.stylespo.databinding.ActivityMainBinding;
+
+
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,41 +37,13 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
     public Button button;
     private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        TextView username = findViewById(R.id.username);
-        TextView password = findViewById(R.id.password);
-
-        Button log_in_button = (Button) findViewById(R.id.log_in_button);
-
-        log_in_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean u = username.getText().toString().equals("admin");
-                boolean p =  password.getText().equals("admin");
-
-                if(username.getText().toString().equals("admin") && password.getText().toString().equals("admin")){
-                    //correct
-                    Toast.makeText(MainActivity.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
-                    //FirstFragment f = new FirstFragment();
-                    // getSupportFragmentManager().beginTransaction().replace(R.id.username,f).commit();
-                    Intent intent = new Intent(MainActivity.this, HomePage.class);
-                    startActivity(intent);
-
-                   // NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_view);
-                   // navController.navigate(R.id.container)
-                }else{
-                    //incorrect
-                    Toast.makeText(MainActivity.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-        });
+       if (savedInstanceState == null) {
+           getSupportFragmentManager().beginTransaction().add(R.id.SignUpFragment, SignUpFragment.class, null).commit();
+       }
 
 //        setSupportActionBar(binding.toolbar);
 //

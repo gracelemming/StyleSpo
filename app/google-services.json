@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "459735899898",
+    "project_id": "stylespo-8420b",
+    "storage_bucket": "stylespo-8420b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459735899898:android:46114451ec6108655ab343",
+        "android_client_info": {
+          "package_name": "com.example.stylespo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADsfCpXaw9NTpcYSa3zEBHv6c83qQE_h8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
