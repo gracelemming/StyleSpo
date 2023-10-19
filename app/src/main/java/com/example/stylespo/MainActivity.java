@@ -3,8 +3,10 @@ package com.example.stylespo;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 
 
@@ -14,12 +16,19 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.stylespo.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,15 +44,36 @@ public class MainActivity extends AppCompatActivity {
         TextView username = findViewById(R.id.username);
         TextView password = findViewById(R.id.password);
 
+
         Button log_in_button = (Button) findViewById(R.id.log_in_button);
 
         log_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean u = username.getText().toString().equals("admin");
-                boolean p =  password.getText().equals("admin");
 
                 if(username.getText().toString().equals("admin") && password.getText().toString().equals("admin")){
+
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    // Create a new user with a first and last name
+                    Map<String, Object> user = new HashMap<>();
+                    user.put(username.getText().toString(), password.getText().toString());
+
+                    // Add a new document with a generated ID
+                    db.collection("users")
+                            .add(user)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Toast.makeText(MainActivity.this,"Datastore SUCCESSFUL",Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(MainActivity.this,"Datastore FAILED",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
                     //correct
                     Toast.makeText(MainActivity.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
                     //FirstFragment f = new FirstFragment();
