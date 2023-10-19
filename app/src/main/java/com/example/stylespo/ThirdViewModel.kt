@@ -1,6 +1,7 @@
-package com.example.stylespo
+package com.example.stylespo;
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel;
 
-class ThirdViewModel : ViewModel() { // TODO: Implement the ViewModel
+public class ThirdViewModel extends ViewModel {
+    // TODO: Implement the ViewModel
 }

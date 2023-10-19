@@ -1,47 +1,65 @@
-package com.example.stylespo
+package com.example.stylespo;
 
-import android.content.Intent
-import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI.navigateUp
-import com.example.stylespo.databinding.ActivityMainBinding
+import android.content.Intent;
+import android.os.Bundle;
 
-class MainActivity : AppCompatActivity() {
-    var button: Button? = null
-    private val appBarConfiguration: AppBarConfiguration? = null
-    private val binding: ActivityMainBinding? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val username = findViewById<TextView>(R.id.username)
-        val password = findViewById<TextView>(R.id.password)
-        val log_in_button = findViewById<View>(R.id.log_in_button) as Button
-        log_in_button.setOnClickListener {
-            val u = username.text.toString() == "admin"
-            val p = password.text == "admin"
-            if (username.text.toString() == "admin" && password.text.toString() == "admin") {
-                //correct
-                Toast.makeText(this@MainActivity, "LOGIN SUCCESSFUL", Toast.LENGTH_SHORT).show()
-                //FirstFragment f = new FirstFragment();
-                // getSupportFragmentManager().beginTransaction().replace(R.id.username,f).commit();
-                val intent = Intent(this@MainActivity, HomePage::class.java)
-                startActivity(intent)
+import androidx.appcompat.app.AppCompatActivity;
 
-                // NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_view);
-                // navController.navigate(R.id.container)
-            } else {
-                //incorrect
-                Toast.makeText(this@MainActivity, "LOGIN FAILED", Toast.LENGTH_SHORT).show()
+import android.view.View;
+
+
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import com.example.stylespo.databinding.ActivityMainBinding;
+
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+
+public class MainActivity extends AppCompatActivity {
+    public Button button;
+    private AppBarConfiguration appBarConfiguration;
+    private ActivityMainBinding binding;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        TextView username = findViewById(R.id.username);
+        TextView password = findViewById(R.id.password);
+
+        Button log_in_button = (Button) findViewById(R.id.log_in_button);
+
+        log_in_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean u = username.getText().toString().equals("admin");
+                boolean p =  password.getText().equals("admin");
+
+                if(username.getText().toString().equals("admin") && password.getText().toString().equals("admin")){
+                    //correct
+                    Toast.makeText(MainActivity.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
+                    //FirstFragment f = new FirstFragment();
+                    // getSupportFragmentManager().beginTransaction().replace(R.id.username,f).commit();
+                    Intent intent = new Intent(MainActivity.this, HomePage.class);
+                    startActivity(intent);
+
+                   // NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_view);
+                   // navController.navigate(R.id.container)
+                }else{
+                    //incorrect
+                    Toast.makeText(MainActivity.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
+                }
             }
-        }
+
+        });
 
 //        setSupportActionBar(binding.toolbar);
 //
@@ -59,25 +77,32 @@ class MainActivity : AppCompatActivity() {
 //        });
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-        return if (id == R.id.action_settings) {
-            true
-        } else super.onOptionsItemSelected(item)
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(this, R.id.nav_host_fragment_content_main)
-        return (navigateUp(navController, appBarConfiguration!!)
-                || super.onSupportNavigateUp())
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        return NavigationUI.navigateUp(navController, appBarConfiguration)
+                || super.onSupportNavigateUp();
     }
 }

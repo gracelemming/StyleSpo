@@ -1,28 +1,36 @@
-package com.example.stylespo
+package com.example.stylespo;
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider;
 
-class ThirdFragment : Fragment() {
-    private var mViewModel: ThirdViewModel? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_third, container, false)
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+public class ThirdFragment extends Fragment {
+
+    private ThirdViewModel mViewModel;
+
+    public static ThirdFragment newInstance() {
+        return new ThirdFragment();
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        mViewModel = ViewModelProvider(this).get(ThirdViewModel::class.java)
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_third, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = new ViewModelProvider(this).get(ThirdViewModel.class);
         // TODO: Use the ViewModel
     }
 
-    companion object {
-        fun newInstance(): ThirdFragment {
-            return ThirdFragment()
-        }
-    }
 }
