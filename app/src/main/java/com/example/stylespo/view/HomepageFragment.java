@@ -21,6 +21,7 @@ public class HomepageFragment extends Fragment {
 
     public HomepageFragment() {
         // Required empty public constructor
+        //
     }
 
 
