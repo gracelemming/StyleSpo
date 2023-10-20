@@ -1,6 +1,7 @@
 package com.example.stylespo;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     public Button button;
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    // Uri indicates, where the image will be picked from
+    private Uri filePath;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,28 +59,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if(username.getText().toString().equals("admin") && password.getText().toString().equals("admin")){
-
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    // Create a new user with a first and last name
-                    Map<String, Object> user = new HashMap<>();
-                    user.put(username.getText().toString(), password.getText().toString());
-
-                    // Add a new document with a generated ID
-                    db.collection("users")
-                            .add(user)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    Toast.makeText(MainActivity.this,"Datastore SUCCESSFUL",Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(MainActivity.this,"Datastore FAILED",Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
                     //correct
                     Toast.makeText(MainActivity.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
                     //FirstFragment f = new FirstFragment();
