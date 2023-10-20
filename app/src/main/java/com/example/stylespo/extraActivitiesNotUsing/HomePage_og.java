@@ -1,14 +1,14 @@
-package com.example.stylespo;
+package com.example.stylespo.extraActivitiesNotUsing;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.example.stylespo.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
-import android.os.Bundle;
 
-public class HomePage extends AppCompatActivity {
+public class HomePage_og extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,22 +16,22 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
 
         BottomNavigationView bottomNavigationView= findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.bottom_home);
+        bottomNavigationView.setSelectedItemId(R.id.HomepageFragment);
 
         bottomNavigationView.setOnItemSelectedListener(item ->{
             int itemId = item.getItemId();
-            if (itemId == R.id.bottom_home) {
+            if (itemId == R.id.HomepageFragment) {
                 return true;
-            } else if (itemId == R.id.bottom_add) {
-                startActivity(new Intent(getApplicationContext(), Add.class));
+            } else if (itemId == R.id.AddFragment) {
+                startActivity(new Intent(getApplicationContext(), Add_og.class));
                 finish();
                 return true;
-            } else if (itemId == R.id.bottom_discover) {
-                startActivity(new Intent(getApplicationContext(), Discovery.class));
+            } else if (itemId == R.id.DiscoverFragment) {
+                startActivity(new Intent(getApplicationContext(), Discovery_og.class));
                 finish();
                 return true;
-            } else if (itemId == R.id.bottom_profile) {
-                startActivity(new Intent(getApplicationContext(), Profile.class));
+            } else if (itemId == R.id.ProfileFragment) {
+                startActivity(new Intent(getApplicationContext(), Profile_og.class));
                 finish();
                 return true;
             }

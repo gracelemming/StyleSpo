@@ -1,10 +1,12 @@
-package com.example.stylespo;
+package com.example.stylespo.defaultNotUsing;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
+
+import com.example.stylespo.R;
 
 public class SettingsActivity extends AppCompatActivity {
 

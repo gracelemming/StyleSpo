@@ -5,29 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/homepage_background"
-    tools:context=".extraActivitiesNotUsing.Add_og">
+    tools:context=".view.HomepageFragment">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
         android:textSize="18sp"
+        android:text="home"
         android:textColor="@color/black"
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
         />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bottomNavigationView"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/bottom_menu"
+        android:layout_marginBottom="0dp"
         app:itemIconSize="30dp"
-        />
-
-
-
+        app:menu="@menu/bottom_menu" />
 
 
 </RelativeLayout>
