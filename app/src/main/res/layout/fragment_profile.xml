@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/homepage_background"
-    tools:context=".extraActivitiesNotUsing.Add_og">
+    tools:context=".view.ProfileFragment">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
+        android:text="Profile"
         android:textSize="18sp"
         android:textColor="@color/black"
         android:layout_centerInParent="true"
