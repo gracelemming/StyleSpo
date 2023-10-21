@@ -8,19 +8,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
-import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.example.stylespo.R;
 import com.example.stylespo.viewmodel.MainViewModel;
-import com.example.stylespo.model.User;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.stylespo.model.UserAccount;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
 
     private MainViewModel mVModel;
-    private User userModel;
+    private UserAccount userAccountModel;
 
     public NavController navController;
 

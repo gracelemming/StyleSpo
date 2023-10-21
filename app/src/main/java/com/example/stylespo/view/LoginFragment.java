@@ -5,11 +5,8 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.stylespo.R;
-import com.example.stylespo.model.User;
+import com.example.stylespo.model.UserAccount;
 import com.example.stylespo.viewmodel.MainViewModel;
 
 /**
@@ -34,7 +31,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private Button mSignUpButton;
     private Button mLoginButton;
     private TextView mTextView;
-    private User userModel;
+    private UserAccount userAccountModel;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -45,9 +42,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         Activity activity = requireActivity();
         mMainViewModel = new ViewModelProvider((ViewModelStoreOwner)activity).get(MainViewModel.class);
-        mMainViewModel.getUserDetails().observe(this, new Observer<User>() {
+        mMainViewModel.getUserDetails().observe(this, new Observer<UserAccount>() {
                     @Override
-                    public void onChanged(User userModel){
+                    public void onChanged(UserAccount userAccountModel){
                         Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
                     }
 
