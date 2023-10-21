@@ -1,4 +1,4 @@
-package com.example.stylespo.defaultNotUsing;
+package com.example.stylespo;
 
 import androidx.lifecycle.ViewModel;
 

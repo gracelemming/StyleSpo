@@ -1,14 +1,14 @@
-package com.example.stylespo.extraActivitiesNotUsing;
+package com.example.stylespo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.stylespo.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
+import android.os.Bundle;
 
-public class HomePage_og extends AppCompatActivity {
+public class HomePage extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,22 +16,22 @@ public class HomePage_og extends AppCompatActivity {
         setContentView(R.layout.activity_home_page);
 
         BottomNavigationView bottomNavigationView= findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.HomepageFragment);
+        bottomNavigationView.setSelectedItemId(R.id.bottom_home);
 
         bottomNavigationView.setOnItemSelectedListener(item ->{
             int itemId = item.getItemId();
-            if (itemId == R.id.HomepageFragment) {
+            if (itemId == R.id.bottom_home) {
                 return true;
-            } else if (itemId == R.id.AddFragment) {
-                startActivity(new Intent(getApplicationContext(), Add_og.class));
+            } else if (itemId == R.id.bottom_add) {
+                startActivity(new Intent(getApplicationContext(), Add.class));
                 finish();
                 return true;
-            } else if (itemId == R.id.DiscoverFragment) {
-                startActivity(new Intent(getApplicationContext(), Discovery_og.class));
+            } else if (itemId == R.id.bottom_discover) {
+                startActivity(new Intent(getApplicationContext(), Discovery.class));
                 finish();
                 return true;
-            } else if (itemId == R.id.ProfileFragment) {
-                startActivity(new Intent(getApplicationContext(), Profile_og.class));
+            } else if (itemId == R.id.bottom_profile) {
+                startActivity(new Intent(getApplicationContext(), Profile.class));
                 finish();
                 return true;
             }

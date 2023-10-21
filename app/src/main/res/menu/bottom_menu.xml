@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/HomepageFragment"
+        android:id="@+id/bottom_home"
         android:icon="@drawable/baseline_home_24"
         android:title="Home"
         />
     <item
-        android:id="@+id/AddFragment"
+        android:id="@+id/bottom_add"
         android:icon="@drawable/baseline_photo_camera_24"
         android:title="Make a post"
         />
     <item
-        android:id="@+id/DiscoverFragment"
+        android:id="@+id/bottom_discover"
         android:icon="@drawable/baseline_auto_awesome_mosaic_24"
         android:title="Discover"
         />
     <item
-        android:id="@+id/ProfileFragment"
+        android:id="@+id/bottom_profile"
         android:icon="@drawable/baseline_account_box_24"
         android:title="Profile"
         />
