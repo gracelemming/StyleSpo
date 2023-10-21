@@ -1,14 +1,14 @@
-package com.example.stylespo;
+package com.example.stylespo.extraActivitiesNotUsing;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.content.Intent;
-import android.os.Bundle;
 
+import com.example.stylespo.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class Profile extends AppCompatActivity {
+public class Profile_og extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,23 +16,23 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         BottomNavigationView bottomNavigationView= findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.bottom_profile);
+        bottomNavigationView.setSelectedItemId(R.id.ProfileFragment);
 
         bottomNavigationView.setOnItemSelectedListener(item ->{
             int itemId = item.getItemId();
-            if (itemId == R.id.bottom_home) {
-                startActivity(new Intent(getApplicationContext(), HomePage.class));
+            if (itemId == R.id.HomepageFragment) {
+                startActivity(new Intent(getApplicationContext(), HomePage_og.class));
                 finish();
                 return true;
-            } else if (itemId == R.id.bottom_add) {
-                startActivity(new Intent(getApplicationContext(), Add.class));
+            } else if (itemId == R.id.AddFragment) {
+                startActivity(new Intent(getApplicationContext(), Add_og.class));
                 finish();
                 return true;
-            } else if (itemId == R.id.bottom_discover) {
-                startActivity(new Intent(getApplicationContext(), Discovery.class));
+            } else if (itemId == R.id.DiscoverFragment) {
+                startActivity(new Intent(getApplicationContext(), Discovery_og.class));
                 finish();
                 return true;
-            } else if (itemId == R.id.bottom_profile) {
+            } else if (itemId == R.id.ProfileFragment) {
 
                 return true;
             }

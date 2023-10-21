@@ -13,26 +13,26 @@
         android:theme="@style/Theme.StyleSpo"
         tools:targetApi="31">
         <activity
-            android:name=".Profile"
+            android:name=".extraActivitiesNotUsing.Profile_og"
             android:exported="false" />
         <activity
-            android:name=".Discovery"
+            android:name=".extraActivitiesNotUsing.Discovery_og"
             android:exported="false" />
         <activity
-            android:name=".Add"
+            android:name=".extraActivitiesNotUsing.Add_og"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".defaultNotUsing.SettingsActivity"
             android:exported="true"
             android:label="Settings" />
         <activity
-            android:name=".HomePage"
+            android:name=".extraActivitiesNotUsing.HomePage_og"
             android:exported="true" />
         <activity
-            android:name=".FirstFragment"
+            android:name=".defaultNotUsing.FirstFragment"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:exported="true"
             android:label="MainActivity"
             android:theme="@style/Theme.StyleSpo">
