@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.example.stylespo.R;
 import com.example.stylespo.databinding.FragmentSignUpBinding;
-import com.example.stylespo.defaultNotUsing.FirstFragment;
 import com.example.stylespo.model.User;
 import com.example.stylespo.viewmodel.MainViewModel;
 
@@ -42,11 +41,17 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private MainViewModel mMainViewModel;
     private Button mSignUpButton;
     private Button mLoginButton;
-    private TextView mTextView;
     private User userModel;
     private FragmentSignUpBinding binding;
+
+    private TextView mFirstName;
+    private TextView mLastName;
     private TextView mUsername;
     private TextView mPassword;
+    private TextView mConfirmPassword;
+
+    private  TextView mEmail;
+
 
     private NavController navController;
 
@@ -80,18 +85,15 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         mLoginButton = v.findViewById(R.id.log_on_button);
         mUsername = v.findViewById(R.id.username);
         mPassword = v.findViewById(R.id.password);
+        mEmail = v.findViewById(R.id.email);
+        mFirstName = v.findViewById(R.id.first_name);
+        mLastName = v.findViewById(R.id.last_name);
+        mConfirmPassword = v.findViewById(R.id.confirm_password);
         mSignUpButton.setOnClickListener(this);
         mLoginButton.setOnClickListener(this);
         return v;
     }
 
-    /*@Override
-    public void onViewCreated(View v, Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
-        navController = Navigation.findNavController(v);
-        findViewById<Button>(R.id.sign_up_button).setOnClickListener(this);
-    }
-*/
 
     public void onClick(View v) {
         final int viewId = v.getId();
@@ -101,15 +103,35 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             if (mUsername.getText().toString().equals("admin") && mPassword.getText().toString().equals("admin")) {
 
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                // Create a new user with a first and last name
-                Map<String, Object> user = new HashMap<>();
 
-                user.put("username" ,mUsername.getText().toString());
+//                CollectionReference collection = db.collection("your_collection_name");
+//                String fieldValueToCheck = "some_unique_value";
+//
+//                collection.whereEqualTo("unique_field", fieldValueToCheck)
+//                        .get()
+//                        .addOnCompleteListener(task -> {
+//                            if (task.isSuccessful()) {
+//                                if (task.getResult().isEmpty()) {
+//                                    // The value is unique; you can add the data
+//                                } else {
+//                                    // The value already exists; handle the error
+//                                }
+//                            } else {
+//                                // Handle the query error
+//                            }
+//                        });
+                Map<String,Map<String, Object>> collection = new HashMap<>();
+                Map<String,Object> user = new HashMap<>();
+                user.put("username", mUsername.getText().toString());
                 user.put("password", mPassword.getText().toString());
+                user.put("email", mEmail.getText().toString());
+                user.put("first_name", mFirstName.getText().toString());
+                user.put("last_name", mLastName.getText().toString());
+                collection.put(mUsername.getText().toString(),user);
 
                 // Add a new document with a generated ID
-                db.collection("users")
-                        .add(user)
+                db.collection("collections")
+                        .add(collection)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
@@ -123,20 +145,21 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                             }
                         });
                 Toast.makeText(getActivity(), "Signup Successful", Toast.LENGTH_SHORT).show();
-           /* NavHostFragment.findNavController(this)
-                    .navigate(R.id.action_signUpFragment_to_HomepageFragment);*/
                 FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction transaction = fm.beginTransaction();
+                 FragmentTransaction transaction = fm.beginTransaction();
                 Fragment fragment = new HomepageFragment();
-                transaction.setReorderingAllowed(true);
-
+               transaction.setReorderingAllowed(true);
                 transaction.replace(R.id.signUp_frag_container, fragment).commit();
-            } else if (viewId == R.id.log_on_button) {
-                //navcontroller here
-                NavHostFragment.findNavController(this)
-                        .navigate(R.id.action_signUpFragment_to_loginFragment);
-
             }
         }
+        else if (viewId == R.id.log_on_button) {
+                Toast.makeText(getActivity(), "Navigating to login page", Toast.LENGTH_SHORT).show();
+                Fragment newFragment = new LoginFragment(); // Instantiate the new fragment
+                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.signUp_frag_container, newFragment);
+                transaction.addToBackStack(null); // Optional: Adds the transaction to the back stack
+                transaction.commit();
+
+            }
     }
 }

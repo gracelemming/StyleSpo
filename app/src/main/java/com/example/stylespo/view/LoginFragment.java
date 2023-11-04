@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -72,9 +73,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         final int viewId = v.getId();
         if(viewId == R.id.makeAccount) {
             Toast.makeText(getActivity(), "Navigating to signup page", Toast.LENGTH_SHORT).show();
-
+            Fragment newFragment = new SignUpFragment(); // Instantiate the new fragment
+            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.login_frag_container, newFragment);
+            transaction.addToBackStack(null); // Optional: Adds the transaction to the back stack
+            transaction.commit();
         } else if (viewId == R.id.log_in_button) {
             //navcontroller here
+
 
         }
     }

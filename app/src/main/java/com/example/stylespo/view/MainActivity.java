@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
             FragmentManager fm = getSupportFragmentManager();
-            Fragment fragment = new SignUpFragment();
+            Fragment fragment = new LoginFragment();
             fm.beginTransaction().add(R.id.main_frag, fragment).commit();
 
 
