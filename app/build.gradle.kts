@@ -49,6 +49,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-firestore:24.9.0")
     implementation ("com.google.firebase:firebase-core:21.1.1")
     implementation("androidx.lifecycle:lifecycle-common:2.6.2")
+    implementation("com.google.firebase:firebase-auth:22.2.0")
     annotationProcessor( "androidx.lifecycle:lifecycle-compiler:2.6.2")
 
     testImplementation("junit:junit:4.13.2")

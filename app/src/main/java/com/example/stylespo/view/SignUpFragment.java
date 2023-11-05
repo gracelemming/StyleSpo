@@ -15,11 +15,20 @@ import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +40,9 @@ import com.example.stylespo.R;
 import com.example.stylespo.databinding.FragmentSignUpBinding;
 import com.example.stylespo.model.User;
 import com.example.stylespo.viewmodel.MainViewModel;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,12 +57,14 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     private TextView mFirstName;
     private TextView mLastName;
-    private TextView mUsername;
-    private TextView mPassword;
-    private TextView mConfirmPassword;
+    private TextView mDOB;
 
     private  TextView mEmail;
-
+    private TextView mPassword;
+    private TextView mConfirmPassword;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
+    String userID;
 
     private NavController navController;
 
@@ -72,6 +85,8 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
                 }
         );
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -83,7 +98,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         navController = NavHostFragment.findNavController(this);
         mSignUpButton = v.findViewById(R.id.sign_up_button);
         mLoginButton = v.findViewById(R.id.log_on_button);
-        mUsername = v.findViewById(R.id.username);
+        mDOB = v.findViewById(R.id.dob);
         mPassword = v.findViewById(R.id.password);
         mEmail = v.findViewById(R.id.email);
         mFirstName = v.findViewById(R.id.first_name);
@@ -94,63 +109,106 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
+    public void onStop(){
+        super.onStop();
+    }
+
+    public void onPause(){
+        super.onPause();
+    }
+
 
     public void onClick(View v) {
         final int viewId = v.getId();
         System.out.println(v.getId());
         System.out.println(R.id.sign_up_button);
         if (viewId == R.id.sign_up_button) {
-            if (mUsername.getText().toString().equals("admin") && mPassword.getText().toString().equals("admin")) {
+            if(TextUtils.isEmpty(String.valueOf(mEmail.getText()))){
+                Toast.makeText(getActivity(),"Enter Email", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (TextUtils.isEmpty(String.valueOf(mPassword.getText()))){
+                Toast.makeText(getActivity(),"Enter Password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!mPassword.getText().toString().trim().equals(mConfirmPassword.getText().toString().trim())){
+                Toast.makeText(getActivity(),"Password is not same as confirm password", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            mAuth.createUserWithEmailAndPassword(mEmail.getText().toString(),mPassword.getText().toString())
+                    .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Authentication passes.",
+                                        Toast.LENGTH_SHORT).show();
+                                userID = mAuth.getCurrentUser().getUid();
+                                DocumentReference documentReference = db.collection("users").document(userID);
+                                Map<String,Object> user = new HashMap<>();
+                                user.put("DOB", mDOB.getText().toString());
+                                user.put("email", mEmail.getText().toString());
+                                user.put("first_name", mFirstName.getText().toString());
+                                user.put("last_name", mLastName.getText().toString());
+                                documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d("TAG","On Success created for "+userID);
+                                    }
+                                })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d("TAG","On Failed created for "+userID);
+                                            }
+                                        });
+                                FragmentManager fm = getActivity().getSupportFragmentManager();
+                                FragmentTransaction transaction = fm.beginTransaction();
+                                Fragment fragment = new HomepageFragment();
+                                transaction.setReorderingAllowed(true);
+                                transaction.replace(R.id.signUp_frag_container, fragment).commit();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(getActivity(), "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
 
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-//                CollectionReference collection = db.collection("your_collection_name");
-//                String fieldValueToCheck = "some_unique_value";
+//            Map<String,Object> user = new HashMap<>();
+//            user.put("username", mUsername.getText().toString());
+//            user.put("password", mPassword.getText().toString());
+//            user.put("email", mEmail.getText().toString());
+//            user.put("first_name", mFirstName.getText().toString());
+//            user.put("last_name", mLastName.getText().toString());
+//            if (mUsername.getText().toString().equals("admin") && mPassword.getText().toString().equals("admin")) {
 //
-//                collection.whereEqualTo("unique_field", fieldValueToCheck)
-//                        .get()
-//                        .addOnCompleteListener(task -> {
-//                            if (task.isSuccessful()) {
-//                                if (task.getResult().isEmpty()) {
-//                                    // The value is unique; you can add the data
-//                                } else {
-//                                    // The value already exists; handle the error
-//                                }
-//                            } else {
-//                                // Handle the query error
+//                FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                // Add a new document with a generated ID
+//                CollectionReference collection = db.collection("users");
+//                // asynchronously retrieve all users
+//
+//                DocumentReference doc = collection.document(mUsername.getText().toString());
+//                db.collection("collections")
+//                        .add(collection)
+//                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                            @Override
+//                            public void onSuccess(DocumentReference documentReference) {
+//                                Toast.makeText(getActivity(), "Datastore SUCCESSFUL", Toast.LENGTH_SHORT).show();
+//                            }
+//                        })
+//                        .addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Toast.makeText(getActivity(), "Datastore FAILED", Toast.LENGTH_SHORT).show();
 //                            }
 //                        });
-                Map<String,Map<String, Object>> collection = new HashMap<>();
-                Map<String,Object> user = new HashMap<>();
-                user.put("username", mUsername.getText().toString());
-                user.put("password", mPassword.getText().toString());
-                user.put("email", mEmail.getText().toString());
-                user.put("first_name", mFirstName.getText().toString());
-                user.put("last_name", mLastName.getText().toString());
-                collection.put(mUsername.getText().toString(),user);
-
-                // Add a new document with a generated ID
-                db.collection("collections")
-                        .add(collection)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Toast.makeText(getActivity(), "Datastore SUCCESSFUL", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getActivity(), "Datastore FAILED", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                Toast.makeText(getActivity(), "Signup Successful", Toast.LENGTH_SHORT).show();
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                 FragmentTransaction transaction = fm.beginTransaction();
-                Fragment fragment = new HomepageFragment();
-               transaction.setReorderingAllowed(true);
-                transaction.replace(R.id.signUp_frag_container, fragment).commit();
-            }
+//                Toast.makeText(getActivity(), "Signup Successful", Toast.LENGTH_SHORT).show();
+//                FragmentManager fm = getActivity().getSupportFragmentManager();
+//                 FragmentTransaction transaction = fm.beginTransaction();
+//                Fragment fragment = new HomepageFragment();
+//               transaction.setReorderingAllowed(true);
+//                transaction.replace(R.id.signUp_frag_container, fragment).commit();
+//            }
         }
         else if (viewId == R.id.log_on_button) {
                 Toast.makeText(getActivity(), "Navigating to login page", Toast.LENGTH_SHORT).show();
