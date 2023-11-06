@@ -26,5 +26,12 @@
         app:itemIconSize="30dp"
         app:menu="@menu/bottom_menu" />
 
+    <FrameLayout
+        android:id="@+id/homepage_frag_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </FrameLayout>
 
 </RelativeLayout>
