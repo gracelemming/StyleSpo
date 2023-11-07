@@ -34,7 +34,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment implements View.OnClickListener {
@@ -43,6 +42,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private MainViewModel mMainViewModel;
     private Button mSignUpButton;
     private Button mLoginButton;
+    private Button mForgotPasswordButton;
     private TextView mPassword;
     private  TextView mEmail;
     private User userModel;
@@ -96,6 +96,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         mSignUpButton = v.findViewById(R.id.makeAccount);
         mLoginButton = v.findViewById(R.id.log_in_button);
+        mForgotPasswordButton = v.findViewById(R.id.forgot_password);
+        mForgotPasswordButton.setOnClickListener(this);
         mSignUpButton.setOnClickListener(this);
         mLoginButton.setOnClickListener(this);
         mPassword = v.findViewById(R.id.password);
@@ -141,6 +143,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     });
 
 
+        } else if (viewId == R.id.forgot_password) {
+            Toast.makeText(getActivity(), "Navigating to forgot password page", Toast.LENGTH_SHORT).show();
+            Fragment newFragment = new ForgotPasswordFragment(); // Instantiate the new fragment
+            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.login_frag_container, newFragment);
+            transaction.addToBackStack(null); // Optional: Adds the transaction to the back stack
+            transaction.commit();
         }
     }
 }
