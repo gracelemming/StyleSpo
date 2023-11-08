@@ -10,15 +10,11 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -37,11 +33,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.stylespo.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -119,6 +111,8 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                     int itemId = item.getItemId();
                     if (itemId == R.id.settings_button) {
                         Toast.makeText(getActivity(), "Settings Selected", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getActivity(), SettingsActivity.class);
+                        startActivity(intent);
                         return true;
                     } else if (itemId == R.id.logout_button) {
                         Toast.makeText(getActivity(), "Logout Selected", Toast.LENGTH_SHORT).show();
