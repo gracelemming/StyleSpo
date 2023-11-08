@@ -5,31 +5,21 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
-import androidx.navigation.fragment.NavHostFragment;
 
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 
 import com.example.stylespo.R;
-import com.example.stylespo.model.User;
 import com.example.stylespo.viewmodel.MainViewModel;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -79,7 +69,7 @@ public class HomepageFragment extends Fragment {
                 Fragment fragment = null;
                 int id = item.getItemId();
                 if (id == R.id.AddFragment) {
-                    fragment = new AddFragment();
+                    fragment = new CameraFragment();
                 } else if (id == R.id.DiscoverFragment) {
                     fragment = new DiscoverFragment();
                 } else if (id == R.id.ProfileFragment) {
@@ -88,8 +78,6 @@ public class HomepageFragment extends Fragment {
                     fragment = new HomepageFragment();
                 }
              getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.homepage_frag_container, fragment).commit();
-
-
 
                 return true;
             }

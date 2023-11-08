@@ -40,8 +40,11 @@
         app:itemIconSize="30dp"
         />
 
-
-
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:src="@tools:sample/backgrounds/scenic" />
 
 
 </RelativeLayout>
