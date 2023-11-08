@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -91,6 +93,7 @@ public class CameraFragment extends Fragment {
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
 
         cameraLauncher.launch(cameraIntent);
+
         return v;
     }
 
