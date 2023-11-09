@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background="@drawable/login_background"
     tools:context=".view.SettingsActivity">
 
     <Button
@@ -23,25 +24,27 @@
         android:text="Update First Name"
         android:onClick="onUpdateFirstNameClick" />
 
-    <!-- Replace with an EditText for user input -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:id="@+id/updateFirstNameLayout"
         android:visibility="gone">
 
         <EditText
+            android:id="@+id/newFirstNameInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="New First Name"
-            android:id="@+id/newFirstNameInput" />
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Save"
-            android:onClick="onUpdateFirstNameClick" />
+            android:onClick="onSaveFirstNameClick" />
     </LinearLayout>
 
     <Button
@@ -50,4 +53,28 @@
         android:layout_height="wrap_content"
         android:text="Delete Account"
         android:onClick="onDeleteAccountClick" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/deleteAccountLayout"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/userPassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Enter Password"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:onClick="onConfirmDeleteAccountClick" />
+    </LinearLayout>
+
 </LinearLayout>
