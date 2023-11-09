@@ -112,7 +112,7 @@ public class SettingsActivity extends AppCompatActivity {
                                             if (deleteTask.isSuccessful()) {
                                                 Toast.makeText(this, "Account deleted successfully", Toast.LENGTH_SHORT).show();
                                                 FirebaseAuth.getInstance().signOut();
-                                                Intent intent = new Intent(this, MainActivity.class);
+                                                Intent intent = new Intent(this, LoginAndSignUpActivity.class);
                                                 startActivity(intent);
                                                 finish();
                                             } else {

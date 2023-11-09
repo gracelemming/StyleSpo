@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -168,30 +169,29 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
         return mime.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
+        private void displayImage() {
+            String imageUrl = "profile_image.jpg";
+            StorageReference imageRef = storageReferenceFolder.child(imageUrl);
+            Glide.with(requireContext())
+                    .load(imageRef) // image ref
+                    .listener(glideRequestListener) // Attach the listener here
+                    .skipMemoryCache(true) // Disable caching in memory
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching on disk
+                    .into(imageView);  // imageview object
+        }
     private void uploadImage(Uri filePath) {
         if (filePath != null) {
-            StorageReference fileRef = storageReferenceFolder.child(System.currentTimeMillis() + "." + getFileExtension(filePath));
+            StorageReference fileRef = storageReferenceFolder.child("profile_image." + getFileExtension(filePath));
             fileRef.putFile(filePath)
                     .addOnSuccessListener(taskSnapshot -> {
                         // Handle successful upload
-                        //Toast.makeText(requireActivity(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                        String imageUrl = fileRef.getPath();
-                        DocumentReference documentReference = db.collection("profile_image").document(userID);
-                        Map<String, Object> images = new HashMap<>();
-                        images.put("imageUrl", imageUrl);
-                        documentReference.set(images).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Log.d("TAG", "On Success Images created for " + userID);
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
+                        Toast.makeText(requireActivity(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                        displayImage();
+                    })
+                    .addOnFailureListener(e -> {
                                     // Handle upload failure
                                     Toast.makeText(requireActivity(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                 });
-                    });
-        } else {
-            Toast.makeText(requireActivity(), "No File Selected", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -207,6 +207,7 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
         @Override
         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
             // Image loaded successfully
+            Log.d("GlideSucess", "Image Load Successful" );
             return false;
         }
     };
@@ -225,30 +226,6 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                         }
                     } else {
                         Log.d("TAG", "Document Does not Exist");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // Handle the error
-                    Log.e("Firestore", "Error getting document", e);
-                });
-    }
-    private void displayImage(){
-        DocumentReference documentReference  = db.collection("profile_image").document(userID);
-        documentReference.get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Map<String, Object> data = documentSnapshot.getData();
-                        if (data != null) {
-                            // Access fields in the data map
-                            String imageUrl = (String) data.get("imageUrl");
-                            StorageReference imageRef = storageReference.child(imageUrl);
-                            Glide.with(requireContext())
-                                    .load(imageRef) // image ref
-                                    .listener(glideRequestListener) // Attach the listener here
-                                    .into(imageView);  // imageview object
-                        }
-                    } else {
-                        Log.d("TAG","Document Does not Exist");
                     }
                 })
                 .addOnFailureListener(e -> {
