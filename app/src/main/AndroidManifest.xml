@@ -18,9 +18,15 @@
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity
-            android:name=".view.MainActivity"
+            android:name=".view.HomeActivity"
             android:exported="true"
-            android:label="MainActivity"
+            android:label="HomeActivity"
+            android:theme="@style/Theme.StyleSpo">
+        </activity>
+        <activity
+            android:name=".view.LoginAndSignUpActivity"
+            android:exported="true"
+            android:label="LoginAndSignUpActivity"
             android:theme="@style/Theme.StyleSpo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,7 @@
 package com.example.stylespo.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -66,8 +67,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     private FirebaseAuth mAuth;
     String userID;
 
-    private NavController navController;
-
     public SignUpFragment() {
         // Required empty public constructor
     }
@@ -95,7 +94,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
 
         View v = inflater.inflate(R.layout.fragment_sign_up, container, false);
-        navController = NavHostFragment.findNavController(this);
         mSignUpButton = v.findViewById(R.id.sign_up_button);
         mLoginButton = v.findViewById(R.id.log_on_button);
         mDOB = v.findViewById(R.id.dob);
@@ -111,6 +109,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
 
     public void onStop(){
         super.onStop();
+
     }
 
     public void onPause(){
@@ -161,11 +160,13 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                                                 Log.d("TAG","On Failed created for "+userID);
                                             }
                                         });
-                                FragmentManager fm = getActivity().getSupportFragmentManager();
-                                FragmentTransaction transaction = fm.beginTransaction();
-                                Fragment fragment = new HomepageFragment();
-                                transaction.setReorderingAllowed(true);
-                                transaction.replace(R.id.signUp_frag_container, fragment).commit();
+//                                FragmentManager fm = getActivity().getSupportFragmentManager();
+//                                FragmentTransaction transaction = fm.beginTransaction();
+//                                Fragment fragment = new HomepageFragment();
+//                                transaction.setReorderingAllowed(true);
+//                                transaction.replace(R.id.signUp_frag_container, fragment).commit();
+                                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                                startActivity(intent);
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(getActivity(), "Authentication failed.",
@@ -173,42 +174,6 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                             }
                         }
                     });
-
-//            Map<String,Object> user = new HashMap<>();
-//            user.put("username", mUsername.getText().toString());
-//            user.put("password", mPassword.getText().toString());
-//            user.put("email", mEmail.getText().toString());
-//            user.put("first_name", mFirstName.getText().toString());
-//            user.put("last_name", mLastName.getText().toString());
-//            if (mUsername.getText().toString().equals("admin") && mPassword.getText().toString().equals("admin")) {
-//
-//                FirebaseFirestore db = FirebaseFirestore.getInstance();
-//                // Add a new document with a generated ID
-//                CollectionReference collection = db.collection("users");
-//                // asynchronously retrieve all users
-//
-//                DocumentReference doc = collection.document(mUsername.getText().toString());
-//                db.collection("collections")
-//                        .add(collection)
-//                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-//                            @Override
-//                            public void onSuccess(DocumentReference documentReference) {
-//                                Toast.makeText(getActivity(), "Datastore SUCCESSFUL", Toast.LENGTH_SHORT).show();
-//                            }
-//                        })
-//                        .addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Toast.makeText(getActivity(), "Datastore FAILED", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                Toast.makeText(getActivity(), "Signup Successful", Toast.LENGTH_SHORT).show();
-//                FragmentManager fm = getActivity().getSupportFragmentManager();
-//                 FragmentTransaction transaction = fm.beginTransaction();
-//                Fragment fragment = new HomepageFragment();
-//               transaction.setReorderingAllowed(true);
-//                transaction.replace(R.id.signUp_frag_container, fragment).commit();
-//            }
         }
         else if (viewId == R.id.log_on_button) {
                 Toast.makeText(getActivity(), "Navigating to login page", Toast.LENGTH_SHORT).show();

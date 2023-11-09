@@ -1,6 +1,7 @@
 package com.example.stylespo.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -50,27 +51,41 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public LoginFragment() {
         // Required empty public constructor
     }
+
+
+
+
+    public void setEnabled(boolean hidden) {
+        mSignUpButton.setEnabled(hidden);
+        mLoginButton.setEnabled(hidden);
+        mForgotPasswordButton.setEnabled(hidden);
+        mPassword.setEnabled(hidden);
+        mEmail.setEnabled(hidden);
+    }
+
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null){
-            FragmentManager fm = getActivity().getSupportFragmentManager();
-            FragmentTransaction transaction = fm.beginTransaction();
-            Fragment fragment = new HomepageFragment();
-            transaction.setReorderingAllowed(true);
-            transaction.replace(R.id.login_frag_container, fragment).commit();
+            setEnabled(false);
+            Intent intent = new Intent(getActivity(), HomeActivity.class);
+            startActivity(intent);
+
+        }else {
+            onHiddenChanged(true);
         }
     }
 
-    public void onStop(){
-        super.onStop();
-    }
-
-    public void onPause(){
-        super.onPause();
-    }
+//    public void onStop(){
+//        super.onStop();
+//    }
+//
+//    public void onPause(){
+//        super.onPause();
+//    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,11 +112,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         mSignUpButton = v.findViewById(R.id.makeAccount);
         mLoginButton = v.findViewById(R.id.log_in_button);
         mForgotPasswordButton = v.findViewById(R.id.forgot_password);
+        mPassword = v.findViewById(R.id.password);
+        mEmail = v.findViewById(R.id.email);
+        setEnabled(true);
         mForgotPasswordButton.setOnClickListener(this);
         mSignUpButton.setOnClickListener(this);
         mLoginButton.setOnClickListener(this);
-        mPassword = v.findViewById(R.id.password);
-        mEmail = v.findViewById(R.id.email);
         return v;
     }
 
@@ -109,6 +125,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         final int viewId = v.getId();
         if(viewId == R.id.makeAccount) {
             Toast.makeText(getActivity(), "Navigating to signup page", Toast.LENGTH_SHORT).show();
+            setEnabled(false);
             Fragment newFragment = new SignUpFragment(); // Instantiate the new fragment
             FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.login_frag_container, newFragment);
@@ -130,11 +147,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                             if (task.isSuccessful()) {
                                 Toast.makeText(getActivity(), "Login successfull.",
                                         Toast.LENGTH_SHORT).show();
-                                    FragmentManager fm = getActivity().getSupportFragmentManager();
-                                    FragmentTransaction transaction = fm.beginTransaction();
-                                    Fragment fragment = new HomepageFragment();
-                                    transaction.setReorderingAllowed(true);
-                                    transaction.replace(R.id.login_frag_container, fragment).commit();
+                                setEnabled(false);
+                                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                                startActivity(intent);
                             } else {
                                 Toast.makeText(getActivity(), "login failed.",
                                         Toast.LENGTH_SHORT).show();
@@ -144,6 +159,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
 
         } else if (viewId == R.id.forgot_password) {
+            setEnabled(false);
             Toast.makeText(getActivity(), "Navigating to forgot password page", Toast.LENGTH_SHORT).show();
             Fragment newFragment = new ForgotPasswordFragment(); // Instantiate the new fragment
             FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();

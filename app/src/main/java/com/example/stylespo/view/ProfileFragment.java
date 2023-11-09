@@ -121,7 +121,7 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                         // Redirect to the login screen or perform any additional cleanup
                         // For example, navigate to the login screen
                         // Replace MainActivity.class with your login activity class
-                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        Intent intent = new Intent(getActivity(), LoginAndSignUpActivity.class);
                         startActivity(intent);
                         // Finish the current activity
                         getActivity().finish();
