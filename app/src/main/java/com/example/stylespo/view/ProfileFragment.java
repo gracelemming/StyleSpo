@@ -55,8 +55,8 @@ import java.util.Map;
 public class ProfileFragment extends Fragment  implements View.OnClickListener {
 
     Button showPopupButton;
-    ImageView imageView;
     TextView userName;
+    ImageView imageView;
     FirebaseFirestore db;
     FirebaseStorage storage;
     StorageReference storageReference;
