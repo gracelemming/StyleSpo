@@ -1,66 +1,190 @@
 package com.example.stylespo.view;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.stylespo.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.bumptech.glide.Glide;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link DiscoverFragment#newInstance} factory method to
+  factory method to
  * create an instance of this fragment.
  */
 public class DiscoverFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
+    String userID;
+    private DiscoverViewModel viewModel;
+    private RecyclerView recyclerView;
+    private YourDiscoverAdapter adapter;
     public DiscoverFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DiscoverFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DiscoverFragment newInstance(String param1, String param2) {
-        DiscoverFragment fragment = new DiscoverFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public void onStop(){
+        super.onStop();
     }
+
+
+    public void onPause(){
+        super.onPause();
+    }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        userID = mAuth.getUid();
+        Glide.get(requireContext()).getRegistry().prepend(StorageReference.class, InputStream.class, new StorageReferenceModelLoaderFactory());
+        viewModel = new ViewModelProvider(this).get(DiscoverViewModel.class);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_discover, container, false);
+        View v = inflater.inflate(R.layout.fragment_discover, container, false);
+        recyclerView = v.findViewById(R.id.recycler_view_discover);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        viewModel.fetchImageList();
+
+        // Observe LiveData and update the adapter when data changes
+        viewModel.getImageListLiveData().observe(getViewLifecycleOwner(), new Observer<List<UserImageField>>() {
+            @Override
+            public void onChanged(List<UserImageField> imageList) {
+                adapter = new YourDiscoverAdapter(imageList);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+            }
+        });
+        return v;
     }
+
+    private RequestListener<Drawable> glideRequestListener = new RequestListener<Drawable>() {
+        @Override
+        public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+            // Handle the load failure here
+            Log.e("GlideError", "Load failed: " + e.getMessage());
+            return false; // Return false to allow Glide to handle the error, or true to indicate that you've handled it.
+        }
+
+        @Override
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+            // Image loaded successfully
+            return false;
+        }
+    };
+
+    class YourDiscoverAdapter extends RecyclerView.Adapter<DiscoverFragment.YourDiscoverAdapter.ViewHolder> {
+
+        private final List<UserImageField> imageList;
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
+        public YourDiscoverAdapter(List<UserImageField> imageList) {
+            this.imageList = imageList;
+        }
+
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            ImageView user1;
+
+            ImageView user2;
+
+            ImageView user3;
+
+            ImageView user4;
+
+            ImageView user5;
+
+            ImageView user6;
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+                user1 = itemView.findViewById(R.id.image_1);
+                user2 = itemView.findViewById(R.id.image_2);
+                user3 = itemView.findViewById(R.id.image_3);
+                user4 = itemView.findViewById(R.id.image_4);
+                user5 = itemView.findViewById(R.id.image_5);
+                user6 = itemView.findViewById(R.id.image_6);
+
+            }
+        }
+
+        @NonNull
+        @Override
+        public DiscoverFragment.YourDiscoverAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_layout_for_discover, parent, false);
+            return new DiscoverFragment.YourDiscoverAdapter.ViewHolder(view);
+        }
+        private RequestListener<Drawable> glideRequestListener = new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                // Handle the load failure here
+                Log.e("GlideError", "Load failed: " + e.getMessage());
+                return false; // Return false to allow Glide to handle the error, or true to indicate that you've handled it.
+            }
+
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                // Image loaded successfully
+                return false;
+            }
+        };
+
+        @Override
+        public void onBindViewHolder(@NonNull DiscoverFragment.YourDiscoverAdapter.ViewHolder holder, int position) {
+            UserImageField userImageField = imageList.get(position);
+
+            // Set image resources and other data to your views in ViewHolder
+
+            StorageReference todayImageRef = storageReference.child(userImageField.getTodayImageRes());
+            Glide.with(requireContext())
+                    .load(todayImageRef) // image ref
+                    .listener(glideRequestListener) // Attach the listener here
+                    .skipMemoryCache(true) // Disable caching in memory
+                    .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching on disk
+                    .into(holder.user1);  // imageview object
+        }
+
+        @Override
+        public int getItemCount() {
+            return imageList.size();
+        }
+    }
+
+
+
 }

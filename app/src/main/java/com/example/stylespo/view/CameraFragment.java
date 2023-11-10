@@ -103,12 +103,19 @@ public class CameraFragment extends Fragment {
                 if (result.getResultCode() == RESULT_OK) {
                     // The photo has been successfully captured and saved in the specified URI
                     // You can now use the photoUri to access the captured image and save it in the database
+
+                    // WANTED TO TRY TO ADD A PAGE WHERE USER CAN REVIEW THE PHOTO THEY TOOK
+                    // Intent reviewintent = new Intent(MediaStore.ACTION_REVIEW);
+                   // postReview.launch(reviewIntent);
+
                     uploadImage(photoUri);
                 } else {
                     Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show();
                 }
             }
     );
+
+
 
     private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = requireActivity().getContentResolver();

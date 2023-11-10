@@ -8,15 +8,22 @@
     tools:context=".view.DiscoverFragment">
 
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:id="@+id/scroll_view_discover"
+        android:layout_width="395dp"
         android:layout_height="wrap_content"
-        android:text="Discover"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        />
+        android:layout_above="@+id/bottomNavigationView"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_discover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </ScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
