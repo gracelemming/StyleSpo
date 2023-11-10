@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -53,7 +54,7 @@ import java.util.Map;
  */
 public class ProfileFragment extends Fragment  implements View.OnClickListener {
 
-    Button showPopupButton;
+    ImageButton showPopupButton;
     TextView userName;
     ImageView profileImage;
     ImageView todayImage;
@@ -87,7 +88,7 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        showPopupButton = rootView.findViewById(R.id.drop_down_button);
+        showPopupButton = (ImageButton) rootView.findViewById(R.id.drop_down_button);
         profileImage = rootView.findViewById(R.id.profile_image);
         todayImage = rootView.findViewById(R.id.today_image);
         showPopupButton.setOnClickListener(this);

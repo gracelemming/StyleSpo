@@ -1,4 +1,4 @@
-package com.example.stylespo.view;
+package com.example.stylespo.viewmodel;
 
 import android.util.Log;
 
@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.stylespo.view.UserImageField;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -14,7 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomepageViewModel extends ViewModel {
+public class DiscoverViewModel extends ViewModel {
     private MutableLiveData<List<UserImageField>> imageListLiveData = new MutableLiveData<>();
 
     public LiveData<List<UserImageField>> getImageListLiveData() {

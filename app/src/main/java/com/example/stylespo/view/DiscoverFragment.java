@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -23,6 +22,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.stylespo.R;
+import com.example.stylespo.viewmodel.DiscoverViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.bumptech.glide.Glide;
@@ -30,6 +30,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -118,26 +119,27 @@ public class DiscoverFragment extends Fragment {
 
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            ImageView user1;
-
-            ImageView user2;
-
-            ImageView user3;
-
-            ImageView user4;
-
-            ImageView user5;
-
-            ImageView user6;
+            List<ImageView> userImageViews;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
-                user1 = itemView.findViewById(R.id.image_1);
+                userImageViews = new ArrayList<>();
+
+                userImageViews.add(itemView.findViewById(R.id.image_1));
+                userImageViews.add(itemView.findViewById(R.id.image_2));
+                userImageViews.add(itemView.findViewById(R.id.image_3));
+                userImageViews.add(itemView.findViewById(R.id.image_4));
+                userImageViews.add(itemView.findViewById(R.id.image_5));
+                userImageViews.add(itemView.findViewById(R.id.image_6));
+
+
+
+                /*user1 = itemView.findViewById(R.id.image_1);
                 user2 = itemView.findViewById(R.id.image_2);
                 user3 = itemView.findViewById(R.id.image_3);
                 user4 = itemView.findViewById(R.id.image_4);
                 user5 = itemView.findViewById(R.id.image_5);
-                user6 = itemView.findViewById(R.id.image_6);
+                user6 = itemView.findViewById(R.id.image_6);*/
 
             }
         }
@@ -169,14 +171,15 @@ public class DiscoverFragment extends Fragment {
             UserImageField userImageField = imageList.get(position);
 
             // Set image resources and other data to your views in ViewHolder
-
-            StorageReference todayImageRef = storageReference.child(userImageField.getTodayImageRes());
-            Glide.with(requireContext())
-                    .load(todayImageRef) // image ref
-                    .listener(glideRequestListener) // Attach the listener here
-                    .skipMemoryCache(true) // Disable caching in memory
-                    .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching on disk
-                    .into(holder.user1);  // imageview object
+            for (int i = 0; i < holder.userImageViews.size(); i++) {
+                StorageReference todayImageRef = storageReference.child(userImageField.getTodayImageRes());
+                Glide.with(requireContext())
+                        .load(todayImageRef) // image ref
+                        .listener(glideRequestListener) // Attach the listener here
+                        .skipMemoryCache(true) // Disable caching in memory
+                        .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching on disk
+                        .into(holder.userImageViews.get(i));  // imageview object
+            }
         }
 
         @Override
