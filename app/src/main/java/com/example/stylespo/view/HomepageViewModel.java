@@ -33,10 +33,10 @@ public class HomepageViewModel extends ViewModel {
                     // Add userImageField to the list before fetching user info
                     imageList.add(userImageField);
                 }
-                // Update LiveData with the list of UserImageField
-                imageListLiveData.postValue(imageList);
                 // Fetch user info for each user in the list
                 fetchUserInfoFromList(imageList);
+                // Update LiveData with the list of UserImageField
+                imageListLiveData.postValue(imageList);
             } else {
                 Log.e("Firestore", "No documents found in the 'images' collection.");
             }
