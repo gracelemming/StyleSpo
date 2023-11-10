@@ -7,11 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,21 +22,14 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.stylespo.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 public class HomepageFragment extends Fragment {
 
@@ -43,7 +37,7 @@ public class HomepageFragment extends Fragment {
     private FirebaseAuth mAuth;
 
     String userID;
-
+    private HomepageViewModel viewModel;
     private RecyclerView recyclerView;
     private YourAdapter adapter;
 
@@ -68,6 +62,7 @@ public class HomepageFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getUid();
         Glide.get(requireContext()).getRegistry().prepend(StorageReference.class, InputStream.class, new StorageReferenceModelLoaderFactory());
+        viewModel = new ViewModelProvider(this).get(HomepageViewModel.class);
     }
 
     @Override
@@ -75,93 +70,37 @@ public class HomepageFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_homepage, container, false);
         recyclerView = v.findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        viewModel.fetchImageList();
 
-        // Use a callback to get the data and update the adapter
-        getYourImageList(imageList -> {
-            adapter = new YourAdapter(imageList);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(adapter);
+        // Observe LiveData and update the adapter when data changes
+        viewModel.getImageListLiveData().observe(getViewLifecycleOwner(), new Observer<List<UserImageField>>() {
+            @Override
+            public void onChanged(List<UserImageField> imageList) {
+                adapter = new YourAdapter(imageList);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+            }
         });
         return v;
     }
 
-    private void getYourImageList(OnImageListReadyCallback callback) {
-        List<UserImageField> imageList = new ArrayList<>();
 
-        // Step 1: Query the collection of user IDs
-        CollectionReference userCollection = db.collection("images");
-        userCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            if (!queryDocumentSnapshots.isEmpty()) {
-                // Step 2: Retrieve all user IDs
-                for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
-                    String userId = document.getId();
-                    UserImageField userImageField = new UserImageField(userId);
-                    imageList.add(userImageField);
-                }
-
-                // Notify the callback with the data
-                callback.onImageListReady(imageList);
-            } else {
-                // Handle the case where no documents were found in the collection.
-                Log.e("Firestore", "No documents found in the 'users' collection.");
-            }
-        }).addOnFailureListener(e -> {
-            // Handle Firestore query failure
-            Log.e("Firestore", "Firestore query failed: " + e.getMessage());
-        });
-    }
-
-    // Callback interface
-    public interface OnImageListReadyCallback {
-        void onImageListReady(List<UserImageField> imageList);
-    }
-
-    static class UserImageField {
-        private String userID;
-        private String name;
-        private String profileImageRes;
-        private String todayImageRes;
-        private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        public UserImageField(String userID) {
-            this.userID = userID;
-            this.profileImageRes = userID + "/profile_image.jpg";
-            this.todayImageRes = userID + "/today_image.jpg";
+    private RequestListener<Drawable> glideRequestListener = new RequestListener<Drawable>() {
+        @Override
+        public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+            // Handle the load failure here
+            Log.e("GlideError", "Load failed: " + e.getMessage());
+            return false; // Return false to allow Glide to handle the error, or true to indicate that you've handled it.
         }
 
-
-        public void setName(String name) {
-            this.name = name;
+        @Override
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+            // Image loaded successfully
+            return false;
         }
+    };
 
-        public String getName() {
-            return name;
-        }
-
-        public String getProfileImageRes() {
-            return profileImageRes;
-        }
-
-        public String getTodayImageRes() {
-            return todayImageRes;
-        }
-
-
-        private RequestListener<Drawable> glideRequestListener = new RequestListener<Drawable>() {
-            @Override
-            public boolean onLoadFailed(GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                // Handle the load failure here
-                Log.e("GlideError", "Load failed: " + e.getMessage());
-                return false; // Return false to allow Glide to handle the error, or true to indicate that you've handled it.
-            }
-
-            @Override
-            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                // Image loaded successfully
-                return false;
-            }
-        };
-    }class YourAdapter extends RecyclerView.Adapter<YourAdapter.ViewHolder> {
+    class YourAdapter extends RecyclerView.Adapter<YourAdapter.ViewHolder> {
 
         private final List<UserImageField> imageList;
         FirebaseStorage storage = FirebaseStorage.getInstance();
