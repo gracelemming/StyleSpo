@@ -136,7 +136,7 @@ public class BottomNavigationFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_homepage, container, false);
+        View v = inflater.inflate(R.layout.fragment_bottom_navigation, container, false);
         bottomNavigationView = v.findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
