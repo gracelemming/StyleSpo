@@ -14,10 +14,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.stylespo.R;
-import com.example.stylespo.viewmodel.MainViewModel;
-import com.example.stylespo.model.User;
-
-import android.widget.Button;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -36,7 +32,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = new HomepageFragment();
+        Fragment fragment = new BottomNavigationFragment();
         fm.beginTransaction().add(R.id.activity_home, fragment).commit();
 
 

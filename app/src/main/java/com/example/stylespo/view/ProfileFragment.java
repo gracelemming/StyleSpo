@@ -34,7 +34,6 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.stylespo.R;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,7 +44,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -57,7 +55,8 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
 
     Button showPopupButton;
     TextView userName;
-    ImageView imageView;
+    ImageView profileImage;
+    ImageView todayImage;
     FirebaseFirestore db;
     FirebaseStorage storage;
     StorageReference storageReference;
@@ -89,12 +88,14 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         showPopupButton = rootView.findViewById(R.id.drop_down_button);
-        imageView = rootView.findViewById(R.id.imageView);
+        profileImage = rootView.findViewById(R.id.profile_image);
+        todayImage = rootView.findViewById(R.id.today_image);
         showPopupButton.setOnClickListener(this);
-        imageView.setOnClickListener(this);
+        profileImage.setOnClickListener(this);
         userName = rootView.findViewById(R.id.username);
         setName();
-        displayImage();
+        displayProfileImage();
+        displayTodayImage();
         return rootView;
     }
 
@@ -134,7 +135,7 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                 }
             });
             popupMenu.show();
-        }else if (viewId == R.id.imageView){
+        }else if (viewId == R.id.profile_image){
 
             // Create a unique file name for the image
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -169,16 +170,25 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
         return mime.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-        private void displayImage() {
-            String imageUrl = "profile_image.jpg";
-            StorageReference imageRef = storageReferenceFolder.child(imageUrl);
+        private void displayProfileImage() {
+            StorageReference imageRef = storageReferenceFolder.child("profile_image.jpg");
             Glide.with(requireContext())
                     .load(imageRef) // image ref
                     .listener(glideRequestListener) // Attach the listener here
                     .skipMemoryCache(true) // Disable caching in memory
                     .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching on disk
-                    .into(imageView);  // imageview object
+                    .into(profileImage);  // imageview object
         }
+
+    private void displayTodayImage() {
+        StorageReference imageRef = storageReferenceFolder.child("today_image.jpg");
+        Glide.with(requireContext())
+                .load(imageRef) // image ref
+                .listener(glideRequestListener) // Attach the listener here
+                .skipMemoryCache(true) // Disable caching in memory
+                .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching on disk
+                .into(todayImage);  // imageview object
+    }
     private void uploadImage(Uri filePath) {
         if (filePath != null) {
             StorageReference fileRef = storageReferenceFolder.child("profile_image." + getFileExtension(filePath));
@@ -186,7 +196,7 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                     .addOnSuccessListener(taskSnapshot -> {
                         // Handle successful upload
                         Toast.makeText(requireActivity(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                        displayImage();
+                        displayProfileImage();
                     })
                     .addOnFailureListener(e -> {
                                     // Handle upload failure

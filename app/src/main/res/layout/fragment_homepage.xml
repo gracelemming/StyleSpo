@@ -1,85 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:background="@drawable/homepage_background"-->
-<!--    tools:context=".view.HomepageFragment">-->
-
-<!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:textSize="18sp"-->
-<!--        android:text="home"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:layout_centerInParent="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        />-->
-
-<!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/bottomNavigationView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_marginBottom="0dp"-->
-<!--        app:itemIconSize="30dp"-->
-<!--        app:menu="@menu/bottom_menu" />-->
-
-<!--    <FrameLayout-->
-<!--        android:id="@+id/homepage_frag_container"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
-
-
-<!--    </FrameLayout>-->
-
-<!--</RelativeLayout>-->
-
-<!-- fragment_homepage.xml -->
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/homepage_background"
-        tools:context=".view.HomepageFragment">
-
-    <!-- Add this ImageView to display the random user's image -->
-<!--    <ImageView-->
-<!--        android:id="@+id/randomUserImageView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_above="@id/bottomNavigationView"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        android:src="@drawable/baseline_person_2_24" /> &lt;!&ndash; Set a placeholder image &ndash;&gt;-->
-
-    <ImageView
-        android:id="@+id/randomUserImageView"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_above="@id/bottomNavigationView"
-        android:scaleType="centerCrop"
-        android:src="@drawable/baseline_person_2_24" />
-
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="0dp"
-            app:itemIconSize="30dp"
-            app:menu="@menu/bottom_menu" />
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/homepage_background"
+    tools:context=".view.BottomNavigationFragment">
 
     <FrameLayout
         android:id="@+id/homepage_frag_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        app:itemIconSize="30dp"
+        app:menu="@menu/bottom_menu" />
 
 </RelativeLayout>

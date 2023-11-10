@@ -118,7 +118,7 @@ public class CameraFragment extends Fragment {
 
     private void uploadImage(Uri filePath) {
         if (filePath != null) {
-            StorageReference fileRef = storageReferenceFolder.child(System.currentTimeMillis() + "." + getFileExtension(filePath));
+            StorageReference fileRef = storageReferenceFolder.child("today_image" + "." + getFileExtension(filePath));
             fileRef.putFile(filePath)
                     .addOnSuccessListener(taskSnapshot -> {
                         // Handle successful upload
