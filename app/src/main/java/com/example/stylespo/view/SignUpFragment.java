@@ -122,6 +122,14 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         System.out.println(v.getId());
         System.out.println(R.id.sign_up_button);
         if (viewId == R.id.sign_up_button) {
+            if(TextUtils.isEmpty(String.valueOf(mFirstName.getText()))){
+                Toast.makeText(getActivity(),"Enter First Name", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (TextUtils.isEmpty(String.valueOf(mLastName.getText()))){
+                Toast.makeText(getActivity(),"Enter Last Name", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if(TextUtils.isEmpty(String.valueOf(mEmail.getText()))){
                 Toast.makeText(getActivity(),"Enter Email", Toast.LENGTH_SHORT).show();
                 return;
@@ -144,10 +152,16 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
                                 userID = mAuth.getCurrentUser().getUid();
                                 DocumentReference documentReference = db.collection("users").document(userID);
                                 Map<String,Object> user = new HashMap<>();
-                                user.put("DOB", mDOB.getText().toString());
-                                user.put("email", mEmail.getText().toString());
-                                user.put("first_name", mFirstName.getText().toString());
-                                user.put("last_name", mLastName.getText().toString());
+                                String DOB = mDOB.getText().toString();
+                                String email =  mEmail.getText().toString().trim();
+                                String firstName =  mFirstName.getText().toString().trim();
+                                firstName = firstName.substring(0,1).toUpperCase() + firstName.substring(1).toLowerCase();
+                                String lastName = mLastName.getText().toString().trim();
+                                lastName = lastName.substring(0,1).toUpperCase() + lastName.substring(1).toLowerCase();
+                                user.put("DOB", DOB);
+                                user.put("email",email);
+                                user.put("first_name",firstName);
+                                user.put("last_name", lastName);
                                 documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
