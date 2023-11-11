@@ -18,6 +18,10 @@
             android:exported="false"
             android:label="@string/title_activity_settings" />
         <activity
+            android:name=".view.UserProfileActivity"
+            android:exported="false"
+            android:label="@string/title_activity_settings" />
+        <activity
             android:name=".view.HomeActivity"
             android:exported="true"
             android:label="HomeActivity"

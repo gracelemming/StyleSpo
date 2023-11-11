@@ -1,16 +1,21 @@
 package com.example.stylespo.view;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +28,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.stylespo.R;
 import com.example.stylespo.viewmodel.HomepageViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.bumptech.glide.Glide;
@@ -77,11 +83,12 @@ public class HomepageFragment extends Fragment {
         viewModel.getImageListLiveData().observe(getViewLifecycleOwner(), new Observer<List<UserImageField>>() {
             @Override
             public void onChanged(List<UserImageField> imageList) {
-                adapter = new YourAdapter(imageList);
+                adapter = new YourAdapter(imageList, userID);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
             }
         });
+
         return v;
     }
 
@@ -101,13 +108,19 @@ public class HomepageFragment extends Fragment {
         }
     };
 
+
+
+
     class YourAdapter extends RecyclerView.Adapter<YourAdapter.ViewHolder> {
 
         private final List<UserImageField> imageList;
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageReference = storage.getReference();
-        public YourAdapter(List<UserImageField> imageList) {
+
+        String currentUserID;
+        public YourAdapter(List<UserImageField> imageList, String currentUserID) {
             this.imageList = imageList;
+            this.currentUserID = currentUserID;
         }
 
 
@@ -115,6 +128,8 @@ public class HomepageFragment extends Fragment {
             ImageView profileImage;
             TextView username;
             ImageView todayImage;
+
+            String userID;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -149,23 +164,72 @@ public class HomepageFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             UserImageField userImageField = imageList.get(position);
+            holder.userID = userImageField.getUserID();
 
             // Set image resources and other data to your views in ViewHolder
-            StorageReference profileImageRef = storageReference.child(userImageField.getProfileImageRes());
-            Glide.with(requireContext())
-                    .load(profileImageRef) // image ref
-                    .listener(glideRequestListener) // Attach the listener here
-                    .skipMemoryCache(true) // Disable caching in memory
-                    .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching on disk
-                    .into(holder.profileImage);  // imageview object
-            holder.username.setText(userImageField.getName());
-            StorageReference todayImageRef = storageReference.child(userImageField.getTodayImageRes());
-            Glide.with(requireContext())
-                    .load(todayImageRef) // image ref
-                    .listener(glideRequestListener) // Attach the listener here
-                    .skipMemoryCache(true) // Disable caching in memory
-                    .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching on disk
-                    .into(holder.todayImage);  // imageview object
+            String profileImageRes = userImageField.getProfileImageRes();
+            String todayImageRes = userImageField.getTodayImageRes();
+
+            if (profileImageRes != null && todayImageRes != null) {
+                StorageReference profileImageRef = storageReference.child(profileImageRes);
+                Glide.with(requireContext())
+                        .load(profileImageRef)
+                        .listener(glideRequestListener)
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(holder.profileImage);
+
+                holder.username.setText(userImageField.getName());
+
+                StorageReference todayImageRef = storageReference.child(todayImageRes);
+                Glide.with(requireContext())
+                        .load(todayImageRef)
+                        .listener(glideRequestListener)
+                        .skipMemoryCache(true)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(holder.todayImage);
+
+                holder.profileImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onProfileImageClick(view, holder.userID);
+                    }
+                });
+            } else {
+                // Handle the case where image paths are null
+                Log.e("YourAdapter", "Image paths are null for position: " + position);
+            }
+        }
+
+        // Inside HomepageFragment
+        private void onProfileImageClick(View view, String userId) {
+            // ...
+
+            Toast.makeText(getContext(), "User ID: " + currentUserID + "user id", Toast.LENGTH_SHORT).show();
+
+            if(userId.equals(currentUserID)){
+                /*
+
+                        Needs to switch to profile in navigation bar
+
+                 */
+//                BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottomNavigationView);
+//                bottomNavigationView.getMenu().findItem(R.id.ProfileFragment).setChecked(true);
+
+                Fragment newFragment = new ProfileFragment(); // Instantiate the new fragment
+                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.homepage_frag_container, newFragment);
+                transaction.addToBackStack(null); // Optional: Adds the transaction to the back stack
+                transaction.commit();
+            }else{
+                Intent intent = new Intent(getActivity(), UserProfileActivity.class);
+                intent.putExtra("userId", userId);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+
+
+            // ...
         }
 
         @Override
