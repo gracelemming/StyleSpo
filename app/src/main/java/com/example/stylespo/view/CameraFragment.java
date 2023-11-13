@@ -14,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -44,7 +46,7 @@ import java.util.Map;
  * Use the {@link CameraFragment#} factory method to
  * create an instance of this fragment.
  */
-public class CameraFragment extends Fragment {
+public class CameraFragment extends Fragment implements View.OnClickListener {
 
     FirebaseStorage storage;
     StorageReference storageReference;
@@ -58,6 +60,11 @@ public class CameraFragment extends Fragment {
     String userID;
 
     private Uri photoUri; // URI to store the captured photo
+
+    Button postButton;
+    Button reTakePhotoButton;
+    ImageView image;
+    EditText tag;
 
     public CameraFragment() {
         // Required empty public constructor
@@ -79,6 +86,25 @@ public class CameraFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add, container, false);
+        takeImage();
+        postButton = v.findViewById(R.id.postButton);
+        reTakePhotoButton = v.findViewById(R.id.reTakeImageButton);
+        image = v.findViewById(R.id.image);
+        tag = v.findViewById(R.id.addTag);
+        postButton.setOnClickListener(this);
+        reTakePhotoButton.setOnClickListener(this);
+        return v;
+    }
+
+    public void onClick(View v) {
+    if(v.getId() == R.id.postButton){
+        uploadImage(photoUri);
+    }else if (v.getId() == R.id.reTakeImageButton){
+        takeImage();
+    }
+    }
+
+    private void takeImage(){
 
         // Create a unique file name for the image
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -93,8 +119,6 @@ public class CameraFragment extends Fragment {
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
 
         cameraLauncher.launch(cameraIntent);
-
-        return v;
     }
 
     private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
@@ -107,8 +131,8 @@ public class CameraFragment extends Fragment {
                     // WANTED TO TRY TO ADD A PAGE WHERE USER CAN REVIEW THE PHOTO THEY TOOK
                     // Intent reviewintent = new Intent(MediaStore.ACTION_REVIEW);
                    // postReview.launch(reviewIntent);
-
-                    uploadImage(photoUri);
+                    image.setImageURI(photoUri);
+                    Toast.makeText(requireContext(), "Got Photo", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_SHORT).show();
                 }
@@ -130,10 +154,9 @@ public class CameraFragment extends Fragment {
                     .addOnSuccessListener(taskSnapshot -> {
                         // Handle successful upload
                         Toast.makeText(requireActivity(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                        String imageUrl = fileRef.getPath();
-                        DocumentReference documentReference = db.collection("images").document(userID);
+                        DocumentReference documentReference = db.collection("tags").document(userID);
                         Map<String, Object> images = new HashMap<>();
-                        images.put("imageUrl", imageUrl);
+                        images.put("tag", tag.getText().toString());
                         documentReference.set(images).addOnSuccessListener(new OnSuccessListener<Void>() {
 
                                     @Override

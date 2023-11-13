@@ -155,7 +155,7 @@ public class BottomNavigationFragment extends Fragment {
                     // Hide or clear the ImageView in the ProfileFragment
                     // You can also set the image to null or an empty image resource
                     // randomUserImageView.setImageDrawable(null);
-                } else if (id == R.id.HomepageFragment2) {
+                } else if (id == R.id.HomepageFragment) {
                     fragment = new HomepageFragment();
                 }
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.homepage_frag_container, fragment).commit();
