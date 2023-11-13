@@ -3,12 +3,19 @@ package com.example.stylespo.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -17,6 +24,8 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.stylespo.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,11 +38,14 @@ public class UserProfileActivity extends AppCompatActivity {
     ImageView profileImage;
     ImageView todayImage;
     FirebaseFirestore db;
+
+    ImageButton back_button;
     FirebaseStorage storage;
     StorageReference storageReference;
     StorageReference storageReferenceFolder;
     private FirebaseAuth mAuth;
     String userID;
+    Button friend_request;
     private Uri photoUri;
 
     @Override
@@ -71,6 +83,62 @@ public class UserProfileActivity extends AppCompatActivity {
         loadUserData();
         loadProfileImage();
         loadTodayImage();
+
+        back_button = (ImageButton) findViewById(R.id.back_button);
+
+
+
+        // Set a click listener for the back button
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(UserProfileActivity.this, HomeActivity.class );
+                startActivity(intent);
+                // Handle the back button click
+/*
+
+ bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item){
+                Fragment fragment = null;
+                int id = item.getItemId();
+                if (id == R.id.AddFragment) {
+                    fragment = new CameraFragment();
+                } else if (id == R.id.DiscoverFragment) {
+                    fragment = new DiscoverFragment();
+                } else if (id == R.id.ProfileFragment) {
+                    fragment = new ProfileFragment();
+                } else if (id == R.id.HomepageFragment) {
+                    fragment = new HomepageFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.homepage_frag_container, fragment).commit();
+
+   BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        MenuItem profileMenuItem = bottomNavigationView.getMenu().findItem(R.id.HomepageFragment);
+        profileMenuItem.setChecked(true);
+
+
+                return true;
+            }
+        });
+ Fragment newFragment = new HomepageFragment();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                // Replace whatever is in the fragment_container view with this fragment, and add the transaction to the back stack
+                transaction.replace(R.id.ProfileFragment, newFragment);
+                transaction.addToBackStack(null);
+                // Commit the transaction
+                transaction.commit();
+
+                FragmentManager fm = getSupportFragmentManager();
+                Fragment fragment = new BottomNavigationFragment();
+                fm.beginTransaction().setReorderingAllowed(true).replace(R.id.homepage_frag_container, fragment).commit();
+ */
+
+                //getSupportFragmentManager().beginTransaction().replace(R.id.homepage_frag_container, new HomepageFragment()).commit();
+            }
+        });
+
+
     }
 
     private void loadUserData() {

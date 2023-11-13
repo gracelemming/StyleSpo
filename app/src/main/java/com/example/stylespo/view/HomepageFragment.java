@@ -224,7 +224,7 @@ public class HomepageFragment extends Fragment {
 
                         Needs to switch to profile in navigation bar
 
-                 */
+
 //                BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottomNavigationView);
 //                bottomNavigationView.getMenu().findItem(R.id.ProfileFragment).setChecked(true);
 
@@ -232,7 +232,7 @@ public class HomepageFragment extends Fragment {
                 FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.homepage_frag_container, newFragment);
                 transaction.addToBackStack(null); // Optional: Adds the transaction to the back stack
-                transaction.commit();
+                transaction.commit();*/
             }else{
                 Intent intent = new Intent(getActivity(), UserProfileActivity.class);
                 intent.putExtra("userId", userId);
