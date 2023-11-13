@@ -25,7 +25,7 @@ public class HomepageViewModel extends ViewModel {
     public void fetchImageList() {
         List<UserImageField> imageList = new ArrayList<>();
 
-        CollectionReference userCollection = FirebaseFirestore.getInstance().collection("images");
+        CollectionReference userCollection = FirebaseFirestore.getInstance().collection("tags");
         userCollection.get().addOnSuccessListener(queryDocumentSnapshots -> {
             if (!queryDocumentSnapshots.isEmpty()) {
                 for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
