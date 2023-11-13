@@ -36,6 +36,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomepageFragment extends Fragment {
@@ -83,13 +84,24 @@ public class HomepageFragment extends Fragment {
         viewModel.getImageListLiveData().observe(getViewLifecycleOwner(), new Observer<List<UserImageField>>() {
             @Override
             public void onChanged(List<UserImageField> imageList) {
-                adapter = new YourAdapter(imageList, userID);
+                List<UserImageField> filteredImageList = filterCurrentUserPosts(imageList, userID);
+                adapter = new YourAdapter(filteredImageList, userID);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
             }
         });
 
         return v;
+    }
+
+    private List<UserImageField> filterCurrentUserPosts(List<UserImageField> imageList, String currentUserID) {
+        List<UserImageField> filteredList = new ArrayList<>();
+        for (UserImageField userImageField : imageList) {
+            if (!userImageField.getUserID().equals(currentUserID)) {
+                filteredList.add(userImageField);
+            }
+        }
+        return filteredList;
     }
 
 
