@@ -54,6 +54,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-common:2.6.2")
     implementation("com.google.firebase:firebase-auth:22.2.0")
     implementation("com.google.firebase:firebase-storage:20.3.0")
+    implementation("com.google.firebase:firebase-database:20.3.0")
     annotationProcessor( "androidx.lifecycle:lifecycle-compiler:2.6.2")
 
     testImplementation("junit:junit:4.13.2")
