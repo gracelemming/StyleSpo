@@ -99,12 +99,7 @@ public class DiscoverFragment extends Fragment {
                 super(itemView);
                 userImageViews = new ArrayList<>();
 
-                userImageViews.add(itemView.findViewById(R.id.image_1));
-                userImageViews.add(itemView.findViewById(R.id.image_2));
-                userImageViews.add(itemView.findViewById(R.id.image_3));
-                userImageViews.add(itemView.findViewById(R.id.image_4));
-                userImageViews.add(itemView.findViewById(R.id.image_5));
-                userImageViews.add(itemView.findViewById(R.id.image_6));
+                userImageViews.add(itemView.findViewById(R.id.image));
             }
         }
 

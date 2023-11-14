@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <!-- Add this code inside the ScrollView in fragment_discover.xml -->
+            <!-- Add SearchView -->
             <SearchView
                 android:id="@+id/searchView"
                 android:layout_width="match_parent"
@@ -30,13 +30,15 @@
                 app:iconifiedByDefault="false"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Add RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_discover"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                />
 
         </LinearLayout>
-
 
     </ScrollView>
 
@@ -46,8 +48,6 @@
         android:id="@+id/bottomNavigationView"
         android:layout_alignParentBottom="true"
         app:menu="@menu/bottom_menu"
-        app:itemIconSize="30dp"
-        />
-
+        app:itemIconSize="30dp" />
 
 </RelativeLayout>
