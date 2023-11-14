@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/friend_request_button"
+        android:layout_below="@+id/friend_request_button_send"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_marginStart="50dp"
@@ -71,13 +71,19 @@
         android:src="@drawable/baseline_person_2_24" />
 
     <Button
-        android:id="@+id/friend_request_button"
+        android:id="@+id/friend_request_button_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/username"
         android:layout_centerHorizontal="true"
         android:text="Add Friend" />
-
+    <Button
+        android:id="@+id/friend_request_button_decline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username"
+        android:layout_toEndOf="@id/friend_request_button_send"
+        android:text="decline"/>
     <TextView
         android:id="@+id/friend_count"
         android:layout_width="wrap_content"
@@ -95,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/friend_count"
-        android:layout_toRightOf="@id/friend_request_button"
+        android:layout_toRightOf="@id/friend_request_button_send"
         android:textSize="18sp"
         android:textColor="@color/black"
         android:layout_marginStart="30dp"

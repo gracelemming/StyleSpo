@@ -1,5 +1,7 @@
 package com.example.stylespo.view;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,9 +26,12 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.stylespo.R;
+import com.example.stylespo.model.FriendReq;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -43,9 +48,14 @@ public class UserProfileActivity extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
     StorageReference storageReferenceFolder;
+
     private FirebaseAuth mAuth;
+    private StorageReference friendRequestRef, userRef;
     String userID;
-    Button friend_request;
+    String currUser;
+    String FRIEND_STATUS;
+    Button friend_send;
+    Button friend_decline;
     private Uri photoUri;
 
     @Override
@@ -73,73 +83,104 @@ public class UserProfileActivity extends AppCompatActivity {
         // Create a storage reference from our app
         storageReference = storage.getReference();
         storageReferenceFolder = storageReference.child(userID);
+        friendRequestRef = storageReference.child("FriendRequests");
 
         // Initialize views
         userName = findViewById(R.id.username);
         profileImage = findViewById(R.id.profile_image);
         todayImage = findViewById(R.id.today_image);
+        currUser = mAuth.getCurrentUser().getUid();
+        FRIEND_STATUS="not_friends";
 
         // Call methods to set up UI components
         loadUserData();
         loadProfileImage();
         loadTodayImage();
+        friend_decline = (Button) findViewById(R.id.friend_request_button_decline);
+        friend_send = (Button) findViewById(R.id.friend_request_button_send);
+        friend_decline.setVisibility(View.INVISIBLE);
+        friend_decline.setEnabled(false);
+
+        if (!currUser.toString().equals(userID.toString())) {
+            friend_send.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    friend_send.setEnabled(false);
+                    if (FRIEND_STATUS.equals("not_friends")){
+                        sendFriendRequest();
+                    }
+                }
+            });
+        }else{
+            friend_decline.setVisibility(View.INVISIBLE);
+            friend_send.setVisibility(View.INVISIBLE);
+
+        }
+
+
 
         back_button = (ImageButton) findViewById(R.id.back_button);
-
-
-
         // Set a click listener for the back button
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserProfileActivity.this, HomeActivity.class );
                 startActivity(intent);
-                // Handle the back button click
-/*
-
- bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item){
-                Fragment fragment = null;
-                int id = item.getItemId();
-                if (id == R.id.AddFragment) {
-                    fragment = new CameraFragment();
-                } else if (id == R.id.DiscoverFragment) {
-                    fragment = new DiscoverFragment();
-                } else if (id == R.id.ProfileFragment) {
-                    fragment = new ProfileFragment();
-                } else if (id == R.id.HomepageFragment) {
-                    fragment = new HomepageFragment();
-                }
-                getSupportFragmentManager().beginTransaction().replace(R.id.homepage_frag_container, fragment).commit();
-
-   BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        MenuItem profileMenuItem = bottomNavigationView.getMenu().findItem(R.id.HomepageFragment);
-        profileMenuItem.setChecked(true);
-
-
-                return true;
             }
         });
- Fragment newFragment = new HomepageFragment();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                // Replace whatever is in the fragment_container view with this fragment, and add the transaction to the back stack
-                transaction.replace(R.id.ProfileFragment, newFragment);
-                transaction.addToBackStack(null);
-                // Commit the transaction
-                transaction.commit();
 
-                FragmentManager fm = getSupportFragmentManager();
-                Fragment fragment = new BottomNavigationFragment();
-                fm.beginTransaction().setReorderingAllowed(true).replace(R.id.homepage_frag_container, fragment).commit();
- */
 
-                //getSupportFragmentManager().beginTransaction().replace(R.id.homepage_frag_container, new HomepageFragment()).commit();
-            }
-        });
+
 
 
     }
+
+
+        private void sendFriendRequest() {
+            // Reference to the friend requests collection
+            CollectionReference friendRequestsCollection = db.collection("friend_requests");
+
+            // Create a friend request data object
+            FriendReq friendReq = new FriendReq(currUser, userID, "pending");
+
+            // Check if a friend request already exists
+            friendRequestsCollection
+                    .whereEqualTo("sender", currUser)
+                    .whereEqualTo("receiver", userID)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Check if there are no existing friend requests
+                            if (task.getResult() == null || task.getResult().isEmpty()) {
+                                // Add a friend request document to the collection
+                                friendRequestsCollection.add(friendReq)
+                                        .addOnSuccessListener(documentReference -> {
+                                            // Friend request sent successfully
+                                            Toast.makeText(UserProfileActivity.this, "Friend request sent", Toast.LENGTH_SHORT).show();
+                                            FRIEND_STATUS = "friend_request_sent";
+                                            friend_send.setEnabled(true);
+                                            friend_send.setText("Cancel friend request");
+                                            friend_decline.setVisibility(View.INVISIBLE);
+                                            friend_decline.setEnabled(false);
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            // Handle the error
+                                            Toast.makeText(UserProfileActivity.this, "Failed to send friend request", Toast.LENGTH_SHORT).show();
+                                        });
+
+                            } else {
+                                // A friend request already exists
+                                Toast.makeText(UserProfileActivity.this, "Friend request already sent", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            // Handle the error
+                            Toast.makeText(UserProfileActivity.this, "Error checking friend requests", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
+
+
+
 
     private void loadUserData() {
         DocumentReference documentReference = db.collection("users").document(userID);

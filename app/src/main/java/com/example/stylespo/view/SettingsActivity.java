@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.example.stylespo.R;
 import com.google.firebase.auth.AuthCredential;
@@ -26,9 +27,14 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void onSendPasswordResetEmail(View view) {
-        // Your existing code for sending password reset email
+        // come back
     }
 
+    public void onBackButtonClicked(View view) {
+        Intent intent = new Intent(SettingsActivity.this, HomeActivity.class);
+        startActivity(intent);
+
+    }
     public void onUpdateFirstNameClick(View view) {
         LinearLayout updateFirstNameLayout = findViewById(R.id.updateFirstNameLayout);
         updateFirstNameLayout.setVisibility(View.VISIBLE);
