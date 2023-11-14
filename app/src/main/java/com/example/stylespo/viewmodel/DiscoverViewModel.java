@@ -1,5 +1,7 @@
 package com.example.stylespo.viewmodel;
 
+import static android.content.ContentValues.TAG;
+
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -11,6 +13,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,20 +55,71 @@ public class DiscoverViewModel extends ViewModel {
         }
     }
 
+    public void searchImagesByTag(String tag) {
+        // Perform a query to fetch images based on the entered tag from Firestore
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference usersCollection = db.collection("users");
+
+        usersCollection.whereArrayContains("tags.tag", tag)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<UserImageField> searchResults = new ArrayList<>();
+
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Assuming you have a method to convert Firestore document to UserImageField
+                            UserImageField userImageField = convertDocumentToUserImageField(document);
+                            searchResults.add(userImageField);
+                        }
+
+                        // Update LiveData with the search results
+                        imageListLiveData.setValue(searchResults);
+                    } else {
+                        // Handle errors
+                        Log.e(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
+    }
+
+    // Helper method to convert Firestore document to UserImageField
+    private UserImageField convertDocumentToUserImageField(QueryDocumentSnapshot document) {
+        // Implement the conversion logic based on your document structure
+        // This is just a placeholder; replace it with your actual logic
+        String todayImageRes = document.getString("todayImageRes");
+        return new UserImageField(todayImageRes);
+    }
+
     public void fetchImageList(String tag) {
         List<UserImageField> imageList = new ArrayList<>();
 
-        CollectionReference userCollection = FirebaseFirestore.getInstance().collection("images");
-        // Use whereEqualTo to filter images based on the tag
-        userCollection.whereEqualTo("tag", tag)
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference tagsCollection = db.collection("tags");
+
+        // Convert the tag to lowercase for case-insensitive search
+        String lowercaseTag = tag.toLowerCase();
+
+        // Use whereGreaterThanOrEqualTo and whereLessThanOrEqualTo to simulate a substring search
+        tagsCollection
+                .whereGreaterThanOrEqualTo("tag", lowercaseTag)
+                .whereLessThanOrEqualTo("tag", lowercaseTag + "\uf8ff")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    // ... (Rest of the existing code remains the same)
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        String userId = document.getId();
+                        UserImageField userImageField = new UserImageField(userId);
+                        imageList.add(userImageField);
+                    }
+
+                    // Fetch user info for each user in the list
+                    fetchUserInfoFromList(imageList);
+                    // Update LiveData with the list of UserImageField
+                    imageListLiveData.postValue(imageList);
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Firestore", "Firestore query failed: " + e.getMessage());
                 });
     }
+
 
     private void fetchUserInfo(UserImageField userImageField) {
         CollectionReference userCollection = FirebaseFirestore.getInstance().collection("users");

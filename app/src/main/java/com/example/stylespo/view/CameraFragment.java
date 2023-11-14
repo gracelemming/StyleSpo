@@ -156,7 +156,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
                         Toast.makeText(requireActivity(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
                         DocumentReference documentReference = db.collection("tags").document(userID);
                         Map<String, Object> images = new HashMap<>();
-                        images.put("tag", tag.getText().toString());
+                        images.put("tag", tag.getText().toString().toLowerCase());
                         documentReference.set(images).addOnSuccessListener(new OnSuccessListener<Void>() {
 
                                     @Override
