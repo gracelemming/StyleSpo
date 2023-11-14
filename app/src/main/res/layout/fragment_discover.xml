@@ -7,7 +7,6 @@
     android:background="@drawable/homepage_background"
     tools:context=".view.DiscoverFragment">
 
-
     <ScrollView
         android:id="@+id/scroll_view_discover"
         android:layout_width="395dp"
@@ -17,11 +16,27 @@
         android:layout_marginTop="50dp"
         android:orientation="vertical">
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_discover"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <!-- Add this code inside the ScrollView in fragment_discover.xml -->
+            <SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:queryHint="Search by Tag"
+                app:iconifiedByDefault="false"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_discover"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
 
     </ScrollView>
 
@@ -33,9 +48,6 @@
         app:menu="@menu/bottom_menu"
         app:itemIconSize="30dp"
         />
-
-
-
 
 
 </RelativeLayout>

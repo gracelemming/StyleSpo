@@ -146,12 +146,11 @@ public class UserProfileActivity extends AppCompatActivity {
         documentReference.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        String firstName = documentSnapshot.getString("first_name");
-                        String lastName = documentSnapshot.getString("last_name");
+                        String username = documentSnapshot.getString("username");
 
                         // Set the username in the UI
-                        if (firstName != null && lastName != null) {
-                            userName.setText(firstName + " " + lastName);
+                        if (username != null) {
+                            userName.setText(username);
                         }
                     } else {
                         // Handle the case where the user data doesn't exist
@@ -184,7 +183,6 @@ public class UserProfileActivity extends AppCompatActivity {
                 .into(todayImage);
     }
 
-    // You can add more methods for additional functionality as needed
 
     private RequestListener<android.graphics.drawable.Drawable> glideRequestListener = new RequestListener<android.graphics.drawable.Drawable>() {
         @Override
@@ -200,15 +198,4 @@ public class UserProfileActivity extends AppCompatActivity {
             return false;
         }
     };
-
-    // You can add more methods for additional functionality as needed
-
-    // For example, if you want to handle profile image uploads, you can add a method like this:
-
-
-
-    // You can call this method with the appropriate Uri when you want to upload a new profile image.
-
-    // You can similarly add methods to handle other functionalities like loading today's image, updating user details, etc.
-
 }

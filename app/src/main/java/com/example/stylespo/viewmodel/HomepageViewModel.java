@@ -30,6 +30,7 @@ public class HomepageViewModel extends ViewModel {
             if (!queryDocumentSnapshots.isEmpty()) {
                 for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
                     String userId = document.getId();
+                    String tag = document.getString("tag"); // Add this line to fetch the tag
                     UserImageField userImageField = new UserImageField(userId);
                     // Add userImageField to the list before fetching user info
                     imageList.add(userImageField);

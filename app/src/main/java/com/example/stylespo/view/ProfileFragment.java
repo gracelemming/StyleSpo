@@ -232,8 +232,7 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                         Map<String, Object> data = documentSnapshot.getData();
                         if (data != null) {
                             // Access fields in the data map
-                            userName.setText((String) data.get("first_name") + " " + (String) data.get("last_name"));
-
+                            userName.setText((String) data.get("username"));
                         }
                     } else {
                         Log.d("TAG", "Document Does not Exist");

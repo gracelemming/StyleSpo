@@ -15,7 +15,6 @@ public class UserImageField {
         this.todayImageRes = userID + "/today_image.jpg";
     }
 
-
     public void setName(String name) {
         this.name = name;
     }

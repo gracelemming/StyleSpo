@@ -24,10 +24,10 @@ public class MainViewModel extends ViewModel {
         }
         return userMutableLiveData;
     }
-    public void onClick(View view){
-        User user = new User(email.getValue(), password.getValue());
-
-
-    }
+//    public void onClick(View view){
+//        User user = new User(email.getValue(), password.getValue());
+//
+//
+//    }
 
 }

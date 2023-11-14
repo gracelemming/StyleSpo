@@ -52,6 +52,21 @@ public class DiscoverViewModel extends ViewModel {
         }
     }
 
+    public void fetchImageList(String tag) {
+        List<UserImageField> imageList = new ArrayList<>();
+
+        CollectionReference userCollection = FirebaseFirestore.getInstance().collection("images");
+        // Use whereEqualTo to filter images based on the tag
+        userCollection.whereEqualTo("tag", tag)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    // ... (Rest of the existing code remains the same)
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Firestore query failed: " + e.getMessage());
+                });
+    }
+
     private void fetchUserInfo(UserImageField userImageField) {
         CollectionReference userCollection = FirebaseFirestore.getInstance().collection("users");
         DocumentReference userDocRef = userCollection.document(userImageField.getUserID());
