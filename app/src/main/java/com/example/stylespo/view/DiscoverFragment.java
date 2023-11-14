@@ -67,14 +67,17 @@ public class DiscoverFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // Perform search based on the entered tag
-
-                viewModel.fetchImageList(query);
+                //viewModel.searchImagesByTag(query);
+                viewModel.fetchImageList(query.toLowerCase());
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 // Handle text changes while typing
+
+                //viewModel.searchImagesByTag(newText);
+                viewModel.fetchImageList(newText.toLowerCase());
                 return false;
             }
         });
