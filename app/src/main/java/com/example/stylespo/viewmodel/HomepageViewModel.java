@@ -57,7 +57,7 @@ public class HomepageViewModel extends ViewModel {
         DocumentReference userDocRef = userCollection.document(userImageField.getUserID());
         userDocRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                String userName = documentSnapshot.getString("first_name") + " " + documentSnapshot.getString("last_name");
+                String userName = documentSnapshot.getString("username");
                 userImageField.setName(userName);
                 // Update LiveData when user info is fetched
                 imageListLiveData.postValue(imageListLiveData.getValue());
