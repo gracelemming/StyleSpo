@@ -89,34 +89,58 @@ public class DiscoverViewModel extends ViewModel {
         return new UserImageField(todayImageRes);
     }
 
-    public void fetchImageList(String tag) {
+    public void fetchImageList(String searchTerm) {
         List<UserImageField> imageList = new ArrayList<>();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference tagsCollection = db.collection("tags");
 
-        // Convert the tag to lowercase for case-insensitive search
-        String lowercaseTag = tag.toLowerCase();
+        // Convert the search term to lowercase for case-insensitive search
+        String lowercaseSearchTerm = searchTerm.toLowerCase();
 
-        // Use whereGreaterThanOrEqualTo and whereLessThanOrEqualTo to simulate a substring search
+        // Use whereArrayContains and whereEqualTo to filter documents based on the tag or username
         tagsCollection
-                .whereGreaterThanOrEqualTo("tag", lowercaseTag)
-                .whereLessThanOrEqualTo("tag", lowercaseTag + "\uf8ff")
+                .whereGreaterThanOrEqualTo("tag", lowercaseSearchTerm)
+                .whereLessThanOrEqualTo("tag", lowercaseSearchTerm + "\uf8ff")
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        String userId = document.getId();
+                .addOnSuccessListener(tagQuerySnapshot -> {
+                    for (QueryDocumentSnapshot tagDocument : tagQuerySnapshot) {
+                        String userId = tagDocument.getId();
                         UserImageField userImageField = new UserImageField(userId);
                         imageList.add(userImageField);
                     }
 
-                    // Fetch user info for each user in the list
-                    fetchUserInfoFromList(imageList);
-                    // Update LiveData with the list of UserImageField
-                    imageListLiveData.postValue(imageList);
+                    // If no results are found in the tags collection, try searching in the usernames collection
+                    if (imageList.isEmpty()) {
+                        CollectionReference usernamesCollection = db.collection("usernames");
+                        usernamesCollection
+                                .whereGreaterThanOrEqualTo("username", lowercaseSearchTerm)
+                                .whereLessThanOrEqualTo("username", lowercaseSearchTerm + "\uf8ff")
+                                .get()
+                                .addOnSuccessListener(usernameQuerySnapshot -> {
+                                    for (QueryDocumentSnapshot usernameDocument : usernameQuerySnapshot) {
+                                        String userId = usernameDocument.getId();
+                                        UserImageField userImageField = new UserImageField(userId);
+                                        imageList.add(userImageField);
+                                    }
+
+                                    // Fetch user info for each user in the list
+                                    fetchUserInfoFromList(imageList);
+                                    // Update LiveData with the list of UserImageField
+                                    imageListLiveData.postValue(imageList);
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("Firestore", "Username query failed: " + e.getMessage());
+                                });
+                    } else {
+                        // Fetch user info for each user in the list
+                        fetchUserInfoFromList(imageList);
+                        // Update LiveData with the list of UserImageField
+                        imageListLiveData.postValue(imageList);
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Firestore query failed: " + e.getMessage());
+                    Log.e("Firestore", "Tag query failed: " + e.getMessage());
                 });
     }
 
