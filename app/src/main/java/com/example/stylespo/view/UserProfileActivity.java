@@ -5,7 +5,6 @@ import static android.app.PendingIntent.getActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -13,11 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -26,9 +21,6 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.stylespo.R;
-import com.example.stylespo.model.FriendReq;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -47,20 +39,20 @@ public class UserProfileActivity extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageReference;
     StorageReference storageReferenceFolder;
-
     private FirebaseAuth mAuth;
-    private StorageReference friendRequestRef, userRef;
     String userID;
     String currUser;
-    String FRIEND_STATUS;
-    Button friend_send;
-    Button friend_decline;
+    Button friendSend;
     private Uri photoUri;
+    CollectionReference friendListCollectionReference;
+    DocumentReference currUserDocumentReference, userDocumentReference;
+    CollectionReference currUserFriendCollectionReference, userFriendCollectionReference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_other_user_profile);
+        setContentView(R.layout.activity_other_user_profile);
 
         // Retrieve userId from the intent
         userID = getIntent().getStringExtra("userId");
@@ -78,45 +70,33 @@ public class UserProfileActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        currUser = mAuth.getUid();
 
-        // Create a storage reference from our app
+                // Create a storage reference from our app
         storageReference = storage.getReference();
         storageReferenceFolder = storageReference.child(userID);
-        friendRequestRef = storageReference.child("FriendRequests");
+        friendListCollectionReference = db.collection("friends_list");
+        currUserDocumentReference = friendListCollectionReference.document(currUser);
+        userDocumentReference = friendListCollectionReference.document(userID);
+        currUserFriendCollectionReference = currUserDocumentReference.collection("friends");
+        userFriendCollectionReference = currUserDocumentReference.collection("friends");
 
         // Initialize views
         userName = findViewById(R.id.username);
         profileImage = findViewById(R.id.profile_image);
         todayImage = findViewById(R.id.today_image);
-        currUser = mAuth.getCurrentUser().getUid();
-        FRIEND_STATUS="not_friends";
 
         // Call methods to set up UI components
         loadUserData();
         loadProfileImage();
         loadTodayImage();
-        friend_decline = (Button) findViewById(R.id.friend_request_button_decline);
-        friend_send = (Button) findViewById(R.id.friend_request_button_send);
-        friend_decline.setVisibility(View.INVISIBLE);
-        friend_decline.setEnabled(false);
-
-        if (!currUser.toString().equals(userID.toString())) {
-            friend_send.setOnClickListener(new View.OnClickListener(){
+        friendSend = (Button) findViewById(R.id.friend_request_button_send);
+            friendSend.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
-                    friend_send.setEnabled(false);
-                    if (FRIEND_STATUS.equals("not_friends")){
-                        sendFriendRequest();
-                    }
+                    clickOnFriendSend();
                 }
             });
-        }else{
-            friend_decline.setVisibility(View.INVISIBLE);
-            friend_send.setVisibility(View.INVISIBLE);
-
-        }
-
-
 
         back_button = (ImageButton) findViewById(R.id.back_button);
         // Set a click listener for the back button
@@ -128,57 +108,41 @@ public class UserProfileActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
     }
 
+    private void clickOnFriendSend() {
+        currUserFriendCollectionReference.document(userID).addSnapshotListener((documentSnapshot, error) -> {
+            if (error != null) {
+                // Handle the error
+                Toast.makeText(UserProfileActivity.this, "Error checking friend status", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        private void sendFriendRequest() {
-            // Reference to the friend requests collection
-            CollectionReference friendRequestsCollection = db.collection("friend_requests");
+            if (documentSnapshot != null && documentSnapshot.exists()) {
+                // Retrieve friend status from the snapshot
+                String friendStatus = documentSnapshot.getString("status");
 
-            // Create a friend request data object
-            FriendReq friendReq = new FriendReq(currUser, userID, "pending");
+                if (friendStatus != null) {
+                    if (friendStatus.equals("accepted")) {
+                        friendSend.setText("Remove Friend");
+                    } else if (friendStatus.equals("pending")) {
+                        friendSend.setText("Cancel Request");
+                    } else {
+                        friendSend.setText("Add Friend");
+                    }
+                    updateStatusAndType(friendStatus);
+                }
+            } else {
+                // Handle the case where the friend document doesn't exist
 
-            // Check if a friend request already exists
-            friendRequestsCollection
-                    .whereEqualTo("sender", currUser)
-                    .whereEqualTo("receiver", userID)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Check if there are no existing friend requests
-                            if (task.getResult() == null || task.getResult().isEmpty()) {
-                                // Add a friend request document to the collection
-                                friendRequestsCollection.add(friendReq)
-                                        .addOnSuccessListener(documentReference -> {
-                                            // Friend request sent successfully
-                                            Toast.makeText(UserProfileActivity.this, "Friend request sent", Toast.LENGTH_SHORT).show();
-                                            FRIEND_STATUS = "friend_request_sent";
-                                            friend_send.setEnabled(true);
-                                            friend_send.setText("Cancel friend request");
-                                            friend_decline.setVisibility(View.INVISIBLE);
-                                            friend_decline.setEnabled(false);
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            // Handle the error
-                                            Toast.makeText(UserProfileActivity.this, "Failed to send friend request", Toast.LENGTH_SHORT).show();
-                                        });
+            }
+        });
+    }
 
-                            } else {
-                                // A friend request already exists
-                                Toast.makeText(UserProfileActivity.this, "Friend request already sent", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            // Handle the error
-                            Toast.makeText(UserProfileActivity.this, "Error checking friend requests", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
-
-
+    private void updateStatusAndType(String friendStatus) {
+        currUserFriendCollectionReference;
+        userFriendCollectionReference;
+    }
 
 
     private void loadUserData() {
