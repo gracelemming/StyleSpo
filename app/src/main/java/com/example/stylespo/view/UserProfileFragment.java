@@ -111,6 +111,9 @@ public class UserProfileFragment extends Fragment  {
         friendSendOrRemoveOrCancelRequest = v.findViewById(R.id.friend_request_button_send);
         declineRequest = v.findViewById(R.id.friend_request_button_decline);
 
+        declineRequest.setEnabled(false);
+        declineRequest.setVisibility(View.INVISIBLE);
+
         updateTextForFriendSendAndDecline();
         friendSendOrRemoveOrCancelRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,15 +129,19 @@ public class UserProfileFragment extends Fragment  {
                 }
             }
         });
-        if(declineRequest.getVisibility() == View.VISIBLE){
-            declineRequest.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    removeFriend();
-                    updateUIForNoFriendStatus();
-                }
-            });
-        }
+        declineRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currUserDocumentReference = friendListCollectionReference.document(currUser);
+                userDocumentReference = friendListCollectionReference.document(userID);
+                currUserFriendCollectionReference = currUserDocumentReference.collection("friends");
+                userFriendCollectionReference = userDocumentReference.collection("friends");
+                cancelRequest();
+                friendSendOrRemoveOrCancelRequest.setText("Add Friend");
+                declineRequest.setEnabled(false);
+                declineRequest.setVisibility(View.INVISIBLE);
+            }
+        });
         back_button = v.findViewById(R.id.back_button);
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,6 +187,8 @@ public class UserProfileFragment extends Fragment  {
     }
 
     private void updateUIForNoFriendStatus() {
+        declineRequest.setEnabled(false);
+        declineRequest.setVisibility(View.INVISIBLE);
         friendSendOrRemoveOrCancelRequest.setText("Add Friend");
     }
 
