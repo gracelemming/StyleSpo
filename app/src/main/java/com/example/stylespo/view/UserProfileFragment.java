@@ -92,10 +92,6 @@ public class UserProfileFragment extends Fragment  {
         storageReference = storage.getReference();
         storageReferenceFolder = storageReference.child(userID);
         friendListCollectionReference = db.collection("friends_list");
-        currUserDocumentReference = friendListCollectionReference.document(currUser);
-        userDocumentReference = friendListCollectionReference.document(userID);
-        currUserFriendCollectionReference = currUserDocumentReference.collection("friends");
-        userFriendCollectionReference = userDocumentReference.collection("friends");
     }
 
     @Override
@@ -119,8 +115,12 @@ public class UserProfileFragment extends Fragment  {
             public void onClick(View v) {
                 if (isButtonClickable) {
                     isButtonClickable = false;
+                    currUserDocumentReference = friendListCollectionReference.document(currUser);
+                    userDocumentReference = friendListCollectionReference.document(userID);
+                    currUserFriendCollectionReference = currUserDocumentReference.collection("friends");
+                    userFriendCollectionReference = userDocumentReference.collection("friends");
                     clickOnFriendSend();
-                    //updateTextForFriendSendAndDecline();
+
                 }
             }
         });
@@ -138,7 +138,7 @@ public class UserProfileFragment extends Fragment  {
     }
 
     private void updateTextForFriendSendAndDecline() {
-        currUserFriendCollectionReference.document(userID)
+        db.document("friends_list/"+currUser+"/friends/"+userID)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
@@ -159,7 +159,7 @@ public class UserProfileFragment extends Fragment  {
         if (friendStatus.equals("accepted")) {
             friendSendOrRemoveOrCancelRequest.setText("Remove Friend");
         } else if (friendStatus.equals("sent")) {
-            friendSendOrRemoveOrCancelRequest.setText("Cancel");
+            friendSendOrRemoveOrCancelRequest.setText("Cancel Request");
         } else if (friendStatus.equals("pending")) {
             friendSendOrRemoveOrCancelRequest.setText("Accept");
         }
@@ -190,13 +190,17 @@ public class UserProfileFragment extends Fragment  {
         if (friendStatus != null) {
             if (friendStatus.equals("accepted")) {
                 removeFriend();
+                friendSendOrRemoveOrCancelRequest.setText("Add Friend");
             } else if (friendStatus.equals("sent")) {
                 cancelRequest();
+                friendSendOrRemoveOrCancelRequest.setText("Add Friend");
             } else if (friendStatus.equals("pending")) {
                 acceptRequest();
+                friendSendOrRemoveOrCancelRequest.setText("Remove Friend");
             }
         } else {
             addFriend();
+            friendSendOrRemoveOrCancelRequest.setText("Cancel Request");
         }
     }
 
