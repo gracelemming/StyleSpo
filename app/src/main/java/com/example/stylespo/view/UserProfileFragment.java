@@ -62,7 +62,8 @@ public class UserProfileFragment extends Fragment  {
     private FirebaseAuth mAuth;
     String userID;
     String currUser;
-    Button friendSendOrRemoveOrCancelRequest;
+
+    Button friendSendOrRemoveOrCancelRequest, declineRequest;
     private Uri photoUri;
     CollectionReference friendListCollectionReference;
     DocumentReference currUserDocumentReference, userDocumentReference;
@@ -108,6 +109,7 @@ public class UserProfileFragment extends Fragment  {
         loadTodayImage();
 
         friendSendOrRemoveOrCancelRequest = v.findViewById(R.id.friend_request_button_send);
+        declineRequest = v.findViewById(R.id.friend_request_button_decline);
 
         updateTextForFriendSendAndDecline();
         friendSendOrRemoveOrCancelRequest.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +126,15 @@ public class UserProfileFragment extends Fragment  {
                 }
             }
         });
-
+        if(declineRequest.getVisibility() == View.VISIBLE){
+            declineRequest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeFriend();
+                    updateUIForNoFriendStatus();
+                }
+            });
+        }
         back_button = v.findViewById(R.id.back_button);
         back_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,12 +166,16 @@ public class UserProfileFragment extends Fragment  {
     }
 
     private void updateUIForFriendStatus(String friendStatus) {
+        declineRequest.setEnabled(false);
+        declineRequest.setVisibility(View.INVISIBLE);
         if (friendStatus.equals("accepted")) {
             friendSendOrRemoveOrCancelRequest.setText("Remove Friend");
         } else if (friendStatus.equals("sent")) {
             friendSendOrRemoveOrCancelRequest.setText("Cancel Request");
         } else if (friendStatus.equals("pending")) {
             friendSendOrRemoveOrCancelRequest.setText("Accept");
+            declineRequest.setEnabled(true);
+            declineRequest.setVisibility(View.VISIBLE);
         }
     }
 
