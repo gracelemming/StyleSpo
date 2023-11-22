@@ -28,6 +28,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class UserProfileActivity extends AppCompatActivity {
 
     TextView userName;
@@ -42,12 +45,12 @@ public class UserProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     String userID;
     String currUser;
-    Button friendSend;
+    Button friendSendOrRemoveOrCancelRequest;
     private Uri photoUri;
     CollectionReference friendListCollectionReference;
     DocumentReference currUserDocumentReference, userDocumentReference;
     CollectionReference currUserFriendCollectionReference, userFriendCollectionReference;
-
+    private boolean isButtonClickable = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +82,7 @@ public class UserProfileActivity extends AppCompatActivity {
         currUserDocumentReference = friendListCollectionReference.document(currUser);
         userDocumentReference = friendListCollectionReference.document(userID);
         currUserFriendCollectionReference = currUserDocumentReference.collection("friends");
-        userFriendCollectionReference = currUserDocumentReference.collection("friends");
+        userFriendCollectionReference = userDocumentReference.collection("friends");
 
         // Initialize views
         userName = findViewById(R.id.username);
@@ -90,11 +93,19 @@ public class UserProfileActivity extends AppCompatActivity {
         loadUserData();
         loadProfileImage();
         loadTodayImage();
-        friendSend = (Button) findViewById(R.id.friend_request_button_send);
-            friendSend.setOnClickListener(new View.OnClickListener(){
+
+
+        updateTextForFriendSendAndDecline();
+
+        friendSendOrRemoveOrCancelRequest = (Button) findViewById(R.id.friend_request_button_send);
+            friendSendOrRemoveOrCancelRequest.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v){
-                    clickOnFriendSend();
+                    if (isButtonClickable) {
+                        isButtonClickable = false;
+                        clickOnFriendSend();
+                        updateTextForFriendSendAndDecline();
+                    }
                 }
             });
 
@@ -110,7 +121,8 @@ public class UserProfileActivity extends AppCompatActivity {
 
     }
 
-    private void clickOnFriendSend() {
+    private void updateTextForFriendSendAndDecline() {
+
         currUserFriendCollectionReference.document(userID).addSnapshotListener((documentSnapshot, error) -> {
             if (error != null) {
                 // Handle the error
@@ -123,26 +135,71 @@ public class UserProfileActivity extends AppCompatActivity {
                 String friendStatus = documentSnapshot.getString("status");
 
                 if (friendStatus != null) {
+                    // declineRequest set invisible and disable
                     if (friendStatus.equals("accepted")) {
-                        friendSend.setText("Remove Friend");
-                    } else if (friendStatus.equals("pending")) {
-                        friendSend.setText("Cancel Request");
-                    } else {
-                        friendSend.setText("Add Friend");
+                        friendSendOrRemoveOrCancelRequest.setText("Remove Friend");
+                    } else if (friendStatus.equals("sent")) {
+                        friendSendOrRemoveOrCancelRequest.setText("Cancel");
+                    } else if (friendStatus.equals("pending")){
+                        friendSendOrRemoveOrCancelRequest.setText("Accept");
+                        // declineRequest set visible and enable
                     }
-                    updateStatusAndType(friendStatus);
                 }
             } else {
                 // Handle the case where the friend document doesn't exist
+                // declineRequest set invisible and disable
+                friendSendOrRemoveOrCancelRequest.setText("Add Friend");
+            }
+        });
+    }
+
+    private void clickOnFriendSend() {
+
+        currUserFriendCollectionReference.document(userID).addSnapshotListener((documentSnapshot, error) -> {
+
+            isButtonClickable = true;
+            if (error != null) {
+                // Handle the error
+                Toast.makeText(UserProfileActivity.this, "Error checking friend status", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (documentSnapshot != null && documentSnapshot.exists()) {
+                // Retrieve friend status from the snapshot
+                String friendStatus = documentSnapshot.getString("status");
+
+                if (friendStatus != null) {
+                    if (friendStatus.equals("accepted")) {
+                        //friendSendOrRemoveOrCancelRequest.setText("Add Friend");
+                        currUserFriendCollectionReference.document(userID).delete();
+                        userFriendCollectionReference.document(currUser).delete();
+                    } else if (friendStatus.equals("sent")) {
+                        //friendSendOrRemoveOrCancelRequest.setText("Add Friend");
+                        currUserFriendCollectionReference.document(userID).delete();
+                        userFriendCollectionReference.document(currUser).delete();
+                    } else if (friendStatus.equals("pending")){
+                        //friendSendOrRemoveOrCancelRequest.setText("Remove Friend");
+                        currUserFriendCollectionReference.document(userID).update("status","accepted");
+                        userFriendCollectionReference.document(currUser).update("status","accepted");
+                    }
+                }
+            } else {
+                // Handle the case where the friend document doesn't exist
+                //friendSendOrRemoveOrCancelRequest.setText("Cancel Request");
+                Map<String,Object> currUserMap = new HashMap<>();
+                Map<String,Object> userMap = new HashMap<>();
+
+                currUserMap.put("status","sent");
+                userMap.put("status","pending");
+
+                currUserFriendCollectionReference.document(userID).set(currUserMap);
+                userFriendCollectionReference.document(currUser).set(userMap);
 
             }
         });
     }
 
-    private void updateStatusAndType(String friendStatus) {
-        currUserFriendCollectionReference;
-        userFriendCollectionReference;
-    }
+
 
 
     private void loadUserData() {

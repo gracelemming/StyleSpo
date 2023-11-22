@@ -78,13 +78,7 @@
         android:layout_centerHorizontal="true"
         android:text="Add Friend" />
 
-    <Button
-        android:id="@+id/friend_request_button_send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/username"
-        android:layout_centerHorizontal="true"
-        android:text="De Friend" />
+
 
     <TextView
         android:id="@+id/friend_count"
