@@ -28,6 +28,11 @@
             android:theme="@style/Theme.StyleSpo">
         </activity>
         <activity
+            android:name=".view.NotificationsActivity"
+            android:label="Notifications">
+            <!-- Add any additional activity attributes as needed -->
+        </activity>
+        <activity
             android:name=".view.LoginAndSignUpActivity"
             android:exported="true"
             android:label="LoginAndSignUpActivity"

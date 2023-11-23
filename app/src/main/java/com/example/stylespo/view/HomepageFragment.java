@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -79,6 +80,7 @@ public class HomepageFragment extends Fragment {
         recyclerView = v.findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         viewModel.fetchImageList();
+        Button notificationButton = v.findViewById(R.id.notification_button);
 
         // Observe LiveData and update the adapter when data changes
         viewModel.getImageListLiveData().observe(getViewLifecycleOwner(), new Observer<List<UserImageField>>() {
@@ -88,6 +90,15 @@ public class HomepageFragment extends Fragment {
                 adapter = new YourAdapter(filteredImageList, userID);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
+            }
+        });
+
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), NotificationsActivity.class);
+                startActivity(intent);
+                Toast.makeText(getContext(), "Notification Button Clicked", Toast.LENGTH_SHORT).show();
             }
         });
 
