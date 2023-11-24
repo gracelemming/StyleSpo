@@ -183,7 +183,6 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
                     if (e != null) {
                         // Handle error
-                        Toast.makeText(requireContext(), "Error fetching friend count", Toast.LENGTH_SHORT).show();
                         return;
                     }
 

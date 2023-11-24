@@ -1,6 +1,7 @@
 package com.example.stylespo.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -95,6 +96,12 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                             .skipMemoryCache(true)
                             .diskCacheStrategy(DiskCacheStrategy.NONE)
                             .into(holder.profileImage);
+                    holder.profileImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onProfileImageClick(view, friendRequestItem.getUserId());
+                        }
+                    });
                 } else {
                     // Handle the case where image paths are null
                     Log.e("YourAdapter", "Image paths are null for position: " + position);
@@ -150,6 +157,15 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                 });
             }
         }
+    }
+
+    private void onProfileImageClick(View view, String userId) {
+
+        Intent intent = new Intent(context, UserProfileActivity.class);
+        intent.putExtra("userId", userId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+
     }
 
     @Override

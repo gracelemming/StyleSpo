@@ -112,6 +112,7 @@ public class UserProfileFragment extends Fragment  {
         loadProfileImage();
         loadTodayImage();
 
+
         friendSendOrRemoveOrCancelRequest = v.findViewById(R.id.friend_request_button_send);
         declineRequest = v.findViewById(R.id.friend_request_button_decline);
 
@@ -129,7 +130,6 @@ public class UserProfileFragment extends Fragment  {
                     currUserFriendCollectionReference = currUserDocumentReference.collection("friends");
                     userFriendCollectionReference = userDocumentReference.collection("friends");
                     clickOnFriendSend();
-
                 }
             }
         });
@@ -171,7 +171,6 @@ public class UserProfileFragment extends Fragment  {
                 .addSnapshotListener((queryDocumentSnapshots, e) -> {
                     if (e != null) {
                         // Handle error
-                        Toast.makeText(requireContext(), "Error fetching friend count", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -264,6 +263,7 @@ public class UserProfileFragment extends Fragment  {
         }).addOnFailureListener(e -> {
             // Handle failure
         });
+        updateFriendCount();
     }
 
     private void cancelRequest() {
@@ -274,6 +274,8 @@ public class UserProfileFragment extends Fragment  {
     private void acceptRequest() {
         currUserFriendCollectionReference.document(userID).update("status", "accepted");
         userFriendCollectionReference.document(currUser).update("status", "accepted");
+        declineRequest.setEnabled(false);
+        declineRequest.setVisibility(View.INVISIBLE);
     }
 
     private void addFriend() {
