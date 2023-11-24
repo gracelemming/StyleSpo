@@ -68,6 +68,8 @@ public class UserProfileFragment extends Fragment  {
     CollectionReference friendListCollectionReference;
     DocumentReference currUserDocumentReference, userDocumentReference;
     CollectionReference currUserFriendCollectionReference, userFriendCollectionReference;
+
+    TextView friendCount;
     private boolean isButtonClickable = true;
 
     public UserProfileFragment() {
@@ -103,7 +105,9 @@ public class UserProfileFragment extends Fragment  {
         userName = v.findViewById(R.id.username);
         profileImage = v.findViewById(R.id.profile_image);
         todayImage = v.findViewById(R.id.today_image);
+        friendCount = v.findViewById(R.id.friend_count);
 
+        updateFriendCount();
         loadUserData();
         loadProfileImage();
         loadTodayImage();
@@ -152,6 +156,29 @@ public class UserProfileFragment extends Fragment  {
         });
 
         return v;
+    }
+
+
+    private void updateFriendCount() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Reference to the "friends" subcollection of the current user
+        CollectionReference friendsCollection = db.collection("friends_list")
+                .document(userID)
+                .collection("friends");
+
+        friendsCollection.whereEqualTo("status", "accepted")
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        // Handle error
+                        Toast.makeText(requireContext(), "Error fetching friend count", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Get the count of friends with "status" as "accepted" and update the UI
+                    int count = queryDocumentSnapshots.size();
+                    friendCount.setText(String.valueOf(count));
+                });
     }
 
     private void updateTextForFriendSendAndDecline() {

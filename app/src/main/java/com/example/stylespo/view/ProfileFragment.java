@@ -36,6 +36,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.stylespo.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -63,6 +64,8 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
     StorageReference storageReference;
     StorageReference storageReferenceFolder;
     private FirebaseAuth mAuth;
+
+    TextView friendCount;
     String userID;
     private Uri photoUri;
     public ProfileFragment() {
@@ -94,9 +97,11 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
         showPopupButton.setOnClickListener(this);
         profileImage.setOnClickListener(this);
         userName = rootView.findViewById(R.id.username);
+        friendCount = rootView.findViewById(R.id.friend_count);
         setName();
         displayProfileImage();
         displayTodayImage();
+        updateFriendCount();
         return rootView;
     }
 
@@ -164,6 +169,48 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                 }
             }
     );
+
+    private void updateFriendCount() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String currentUserId = FirebaseAuth.getInstance().getUid();
+
+        // Reference to the "friends" subcollection of the current user
+        CollectionReference friendsCollection = db.collection("friends_list")
+                .document(currentUserId)
+                .collection("friends");
+
+        friendsCollection.whereEqualTo("status", "accepted")
+                .addSnapshotListener((queryDocumentSnapshots, e) -> {
+                    if (e != null) {
+                        // Handle error
+                        Toast.makeText(requireContext(), "Error fetching friend count", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Get the count of friends with "status" as "accepted" and update the UI
+                    int count = queryDocumentSnapshots.size();
+                    friendCount.setText(String.valueOf(count));
+                });
+
+//        // Reference to the "friends" subcollection of the current user
+//        CollectionReference friendsCollection = db.collection("friends_list")
+//                .document(currentUserId)
+//                .collection("friends");
+//
+//        // Query to get only friends with "status" as "accepted"
+//        friendsCollection.whereEqualTo("status", "accepted")
+//                .get()
+//                .addOnSuccessListener(queryDocumentSnapshots -> {
+//                    // Get the count of friends with "status" as "accepted" and update the UI
+//                    int count = queryDocumentSnapshots.size();
+//                    friendCount.setText(String.valueOf(count));
+//                })
+//                .addOnFailureListener(e -> {
+//                    // Handle error
+//                    Toast.makeText(requireContext(), "Error fetching friend count", Toast.LENGTH_SHORT).show();
+//                });
+    }
+
 
     private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = requireActivity().getContentResolver();

@@ -1,6 +1,9 @@
 package com.example.stylespo.view;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,6 +40,8 @@ public class NotificationsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String currentUserId;
 
+    ImageButton back_button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +63,12 @@ public class NotificationsActivity extends AppCompatActivity {
         friendRequestsRecyclerView.setAdapter(friendRequestsAdapter);
 
         loadFriendRequests();
+
+        back_button = findViewById(R.id.back_button);
+        back_button.setOnClickListener(v -> {
+            Intent intent = new Intent(NotificationsActivity.this, HomeActivity.class);
+            startActivity(intent);
+        });
 
         // You can add more UI elements and functionality as needed
     }
@@ -121,6 +132,8 @@ public class NotificationsActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
 
 
 
