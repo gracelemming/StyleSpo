@@ -145,13 +145,9 @@ public class UserProfileFragment extends Fragment  {
             }
         });
         back_button = v.findViewById(R.id.back_button);
-        back_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), HomeActivity.class);
-                startActivity(intent);
-            }
-        });
+        back_button.setVisibility(v.INVISIBLE);
+        back_button.setEnabled(false);
+
 
         return v;
     }

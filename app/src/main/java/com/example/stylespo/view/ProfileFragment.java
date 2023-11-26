@@ -10,6 +10,7 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
@@ -57,6 +58,7 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
 
     ImageButton showPopupButton;
     TextView userName;
+    ImageButton deletePostButton;
     ImageView profileImage;
     ImageView todayImage;
     FirebaseFirestore db;
@@ -92,9 +94,12 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         showPopupButton = (ImageButton) rootView.findViewById(R.id.drop_down_button);
+        deletePostButton = (ImageButton) rootView.findViewById(R.id.delete_post_button);
         profileImage = rootView.findViewById(R.id.profile_image);
         todayImage = rootView.findViewById(R.id.today_image);
         showPopupButton.setOnClickListener(this);
+        deletePostButton.setOnClickListener(this);
+
         profileImage.setOnClickListener(this);
         userName = rootView.findViewById(R.id.username);
         friendCount = rootView.findViewById(R.id.friend_count);
@@ -227,6 +232,19 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                     .into(profileImage);  // imageview object
         }
 
+    private void deleteTodayImage(StorageReference imageRef) {
+        imageRef.delete()
+                .addOnSuccessListener(aVoid -> {
+                    // Image deleted successfully
+                    Toast.makeText(requireContext(), "image deleted successfully", Toast.LENGTH_SHORT).show();
+                    // You may want to update the UI or take other actions after deleting the image
+                })
+                .addOnFailureListener(e -> {
+                    // Error deleting image
+                    Toast.makeText(requireContext(), "Failed to delete profile image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
     private void displayTodayImage() {
         StorageReference imageRef = storageReferenceFolder.child("today_image.jpg");
         Glide.with(requireContext())
@@ -235,6 +253,34 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                 .skipMemoryCache(true) // Disable caching in memory
                 .diskCacheStrategy(DiskCacheStrategy.NONE) // Disable caching on disk
                 .into(todayImage);  // imageview object
+        imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+            // TodayImage exists, set up deletePostButton click listener
+            deletePostButton.setOnClickListener(v -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setTitle("Confirm Deletion");
+                builder.setMessage("Are you sure you want to delete your profile image?");
+
+                builder.setPositiveButton("Yes", (dialog, which) -> {
+                    // User clicked Yes, proceed with image deletion
+                    deleteTodayImage(imageRef);
+                    deletePostButton.setVisibility(v.INVISIBLE);
+                    deletePostButton.setEnabled(false);
+                });
+
+                builder.setNegativeButton("No", (dialog, which) -> {
+                    // User clicked No, cancel the deletion action
+                    dialog.dismiss();
+                });
+
+                // Show the dialog
+                builder.show();
+            });
+
+        }).addOnFailureListener(e -> {
+            // TodayImage does not exist, hide deletePostButton
+            deletePostButton.setVisibility(View.INVISIBLE);
+            deletePostButton.setEnabled(false);
+        });
     }
     private void uploadImage(Uri filePath) {
         if (filePath != null) {
