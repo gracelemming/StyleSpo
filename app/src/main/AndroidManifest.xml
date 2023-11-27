@@ -16,27 +16,33 @@
         <activity
             android:name=".view.SettingsActivity"
             android:exported="false"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_settings" />
         <activity
             android:name=".view.UserProfileActivity"
             android:exported="false"
-            android:label="@string/title_activity_settings" />
+            android:configChanges="orientation|screenSize"
+            android:label="UserProfileActivity" />
         <activity
             android:name=".view.HomeActivity"
             android:exported="true"
             android:label="HomeActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.StyleSpo">
         </activity>
         <activity
             android:name=".view.NotificationsActivity"
-            android:label="Notifications">
+            android:label="Notifications"
+            android:configChanges="orientation|screenSize"
+            >
             <!-- Add any additional activity attributes as needed -->
         </activity>
         <activity
             android:name=".view.LoginAndSignUpActivity"
             android:exported="true"
             android:label="LoginAndSignUpActivity"
-            android:theme="@style/Theme.StyleSpo">
+            android:theme="@style/Theme.StyleSpo"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

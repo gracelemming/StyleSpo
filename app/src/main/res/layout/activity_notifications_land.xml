@@ -16,11 +16,11 @@
         android:layout_marginBottom="7dp"
         android:background="#00000000"
         android:src="@drawable/baseline_keyboard_backspace_24" />
-
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="50dp"
         android:orientation="vertical">
@@ -30,6 +30,6 @@
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
         android:orientation="vertical" />
-    </ScrollView>
+   </ScrollView>
 
 </RelativeLayout>

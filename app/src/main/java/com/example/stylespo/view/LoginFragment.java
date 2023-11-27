@@ -2,6 +2,7 @@ package com.example.stylespo.view;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -88,7 +89,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_login, container, false);
+        View v;
+        int orientation = getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            v = inflater.inflate(R.layout.fragment_login, container, false);
+        } else {
+            v = inflater.inflate(R.layout.fragment_login_land, container, false);
+        }
         mSignUpButton = v.findViewById(R.id.makeAccount);
         mLoginButton = v.findViewById(R.id.log_in_button);
         mForgotPasswordButton = v.findViewById(R.id.forgot_password);

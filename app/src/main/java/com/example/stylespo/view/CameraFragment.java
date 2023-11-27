@@ -4,6 +4,7 @@ import static android.app.Activity.RESULT_OK;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -85,7 +86,14 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_add, container, false);
+        View v;
+        int orientation = getResources().getConfiguration().orientation;
+
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            v = inflater.inflate(R.layout.fragment_add, container, false);
+        } else {
+            v = inflater.inflate(R.layout.fragment_add_land, container, false);
+        }
         takeImage();
         postButton = v.findViewById(R.id.postButton);
         reTakePhotoButton = v.findViewById(R.id.reTakeImageButton);
