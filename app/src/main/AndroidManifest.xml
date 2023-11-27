@@ -14,6 +14,9 @@
         android:theme="@style/Theme.StyleSpo"
         tools:targetApi="31">
         <activity
+            android:name=".view.FriendsListActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
@@ -25,11 +28,11 @@
             android:name=".view.HomeActivity"
             android:exported="true"
             android:label="HomeActivity"
-            android:theme="@style/Theme.StyleSpo">
-        </activity>
+            android:theme="@style/Theme.StyleSpo"></activity>
         <activity
             android:name=".view.NotificationsActivity"
             android:label="Notifications">
+
             <!-- Add any additional activity attributes as needed -->
         </activity>
         <activity

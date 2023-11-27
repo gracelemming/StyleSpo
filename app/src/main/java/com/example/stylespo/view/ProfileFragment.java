@@ -58,6 +58,8 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
 
     ImageButton showPopupButton;
     TextView userName;
+
+    TextView firstName;
     ImageButton deletePostButton;
     ImageView profileImage;
     ImageView todayImage;
@@ -102,12 +104,21 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
 
         profileImage.setOnClickListener(this);
         userName = rootView.findViewById(R.id.username);
+        firstName = rootView.findViewById(R.id.first_name);
         friendCount = rootView.findViewById(R.id.friend_count);
-        setName();
+        friendCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle click on friendCount, navigate to FriendsListActivity
+                Intent intent = new Intent(getActivity(), FriendsListActivity.class);
+                startActivity(intent);
+            }
+        }); setName();
+        setUserName();
         displayProfileImage();
         displayTodayImage();
         updateFriendCount();
-        return rootView;
+       return rootView;
     }
 
     @Override
@@ -315,7 +326,7 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
         }
     };
 
-    private void setName() {
+    private void setUserName() {
 
         DocumentReference documentReference = db.collection("users").document(userID);
         documentReference.get()
@@ -335,5 +346,28 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                     Log.e("Firestore", "Error getting document", e);
                 });
     }
+
+    private void setName() {
+
+        DocumentReference documentReference = db.collection("users").document(userID);
+        documentReference.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Map<String, Object> data = documentSnapshot.getData();
+                        if (data != null) {
+                            // Access fields in the data map
+                            firstName.setText((String) data.get("first_name"));
+                        }
+                    } else {
+                        Log.d("TAG", "Document Does not Exist");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Handle the error
+                    Log.e("Firestore", "Error getting document", e);
+                });
+    }
+
+
 
 }
