@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/login_background"
+    tools:context=".view.SettingsActivity">
+
+    <ImageButton
+        android:id="@+id/back_to_profile_button"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="#00000000"
+        android:src="@drawable/baseline_keyboard_backspace_24"
+        android:onClick="onBackButtonClicked"/>
+
+    <Button
+        android:id="@+id/sendPasswordResetEmailButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"
+        android:text="Send Password Reset Email"
+        android:onClick="onSendPasswordResetEmail" />
+
+    <Button
+        android:id="@+id/updateFirstNameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+
+        android:text="Update First Name"
+        android:onClick="onUpdateFirstNameClick" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="horizontal"
+        android:id="@+id/updateFirstNameLayout"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/newFirstNameInput"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="New First Name"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:onClick="onSaveFirstNameClick" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/deleteAccountButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:text="Delete Account"
+        android:onClick="onDeleteAccountClick" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/deleteAccountLayout"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/userPassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Enter Password"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:onClick="onConfirmDeleteAccountClick" />
+    </LinearLayout>
+
+</LinearLayout>

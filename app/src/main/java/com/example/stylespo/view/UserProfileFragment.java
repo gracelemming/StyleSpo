@@ -4,6 +4,7 @@ import static android.content.Intent.getIntent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -100,8 +101,14 @@ public class UserProfileFragment extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_other_user_profile, container, false);
+        View v;
+        int orientation = getResources().getConfiguration().orientation;
 
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            v = inflater.inflate(R.layout.fragment_other_user_profile, container, false);
+        } else {
+            v = inflater.inflate(R.layout.fragment_other_user_profile_land, container, false);
+        }
         userName = v.findViewById(R.id.username);
         profileImage = v.findViewById(R.id.profile_image);
         todayImage = v.findViewById(R.id.today_image);
@@ -141,13 +148,19 @@ public class UserProfileFragment extends Fragment  {
                 currUserFriendCollectionReference = currUserDocumentReference.collection("friends");
                 userFriendCollectionReference = userDocumentReference.collection("friends");
                 cancelRequest();
-                updateTextForFriendSendAndDecline();
+                friendSendOrRemoveOrCancelRequest.setText("Add Friend");
+                declineRequest.setEnabled(false);
+                declineRequest.setVisibility(View.INVISIBLE);
             }
         });
         back_button = v.findViewById(R.id.back_button);
-        back_button.setVisibility(v.INVISIBLE);
-        back_button.setEnabled(false);
-
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return v;
     }
@@ -220,10 +233,8 @@ public class UserProfileFragment extends Fragment  {
                 if (documentSnapshot != null && documentSnapshot.exists()) {
                     String friendStatus = documentSnapshot.getString("status");
                     handleFriendStatus(friendStatus);
-                    updateTextForFriendSendAndDecline();
                 } else {
                     handleFriendStatus(null);
-                    updateTextForFriendSendAndDecline();
                 }
             } else {
                 Toast.makeText(getActivity(), "Error checking friend status", Toast.LENGTH_SHORT).show();
@@ -235,13 +246,17 @@ public class UserProfileFragment extends Fragment  {
         if (friendStatus != null) {
             if (friendStatus.equals("accepted")) {
                 removeFriend();
+                friendSendOrRemoveOrCancelRequest.setText("Add Friend");
             } else if (friendStatus.equals("sent")) {
                 cancelRequest();
+                friendSendOrRemoveOrCancelRequest.setText("Add Friend");
             } else if (friendStatus.equals("pending")) {
                 acceptRequest();
+                friendSendOrRemoveOrCancelRequest.setText("Remove Friend");
             }
         } else {
             addFriend();
+            friendSendOrRemoveOrCancelRequest.setText("Cancel Request");
         }
     }
 
@@ -266,6 +281,8 @@ public class UserProfileFragment extends Fragment  {
     private void acceptRequest() {
         currUserFriendCollectionReference.document(userID).update("status", "accepted");
         userFriendCollectionReference.document(currUser).update("status", "accepted");
+        declineRequest.setEnabled(false);
+        declineRequest.setVisibility(View.INVISIBLE);
     }
 
     private void addFriend() {

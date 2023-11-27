@@ -1,5 +1,6 @@
 package com.example.stylespo.view;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -28,10 +29,16 @@ public class ForgotPasswordFragment extends Fragment implements View.OnClickList
         super.onCreate(savedInstanceState);
         mAuth = FirebaseAuth.getInstance();
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_forgot_password, container, false);
+        View v;
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            v = inflater.inflate(R.layout.fragment_forgot_password, container, false);
+        } else {
+            v = inflater.inflate(R.layout.fragment_forgot_password, container, false);
+        }
+
         mEmail = v.findViewById(R.id.email_forgot);
         mResetButton = v.findViewById(R.id.reset_password_button);
         mResetButton.setOnClickListener(this);

@@ -1,6 +1,7 @@
 package com.example.stylespo.view;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -45,7 +46,13 @@ public class NotificationsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notifications);
+
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setContentView(R.layout.activity_notifications);
+        } else {
+            setContentView(R.layout.activity_notifications_land);  // Use a different layout for landscape
+        }
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -72,6 +79,7 @@ public class NotificationsActivity extends AppCompatActivity {
 
         // You can add more UI elements and functionality as needed
     }
+
 
     // Inside the loadFriendRequests method in NotificationsActivity
     // Inside the loadFriendRequests method in NotificationsActivity

@@ -4,6 +4,7 @@ import static android.app.Activity.RESULT_OK;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -93,8 +94,14 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        View rootView;
+        int orientation = getResources().getConfiguration().orientation;
 
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            rootView = inflater.inflate(R.layout.fragment_profile, container, false);
+        } else {
+            rootView = inflater.inflate(R.layout.fragment_profile_land, container, false);
+        }
         showPopupButton = (ImageButton) rootView.findViewById(R.id.drop_down_button);
         deletePostButton = (ImageButton) rootView.findViewById(R.id.delete_post_button);
         profileImage = rootView.findViewById(R.id.profile_image);
@@ -335,7 +342,7 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
                         Map<String, Object> data = documentSnapshot.getData();
                         if (data != null) {
                             // Access fields in the data map
-                            userName.setText((String) data.get("usernam"));
+                            userName.setText((String) data.get("username"));
                         }
                     } else {
                         Log.d("TAG", "Document Does not Exist");
