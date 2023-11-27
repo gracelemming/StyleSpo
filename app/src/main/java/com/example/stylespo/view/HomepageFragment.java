@@ -80,7 +80,7 @@ public class HomepageFragment extends Fragment {
         recyclerView = v.findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         viewModel.fetchImageList();
-        Button notificationButton = v.findViewById(R.id.notification_button);
+        ImageButton notificationButton = v.findViewById(R.id.notification_button);
 
         // Observe LiveData and update the adapter when data changes
         viewModel.getImageListLiveData().observe(getViewLifecycleOwner(), new Observer<List<UserImageField>>() {
