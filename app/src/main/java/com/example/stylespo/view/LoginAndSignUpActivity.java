@@ -27,15 +27,17 @@ public class LoginAndSignUpActivity extends AppCompatActivity {
 
     public NavController navController;
 
+    private LoginFragment mLoginFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
      //   activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
 
             FragmentManager fm = getSupportFragmentManager();
             Fragment fragment = new LoginFragment();
-            fm.beginTransaction().add(R.id.activity_main, fragment).commit();
+            fm.beginTransaction().add(R.id.activity_home, fragment).commit();
     }
 
     @Override

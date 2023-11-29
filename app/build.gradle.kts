@@ -60,10 +60,10 @@ dependencies {
     annotationProcessor( "androidx.lifecycle:lifecycle-compiler:2.6.2")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation ("androidx.test:rules:1.4.0")
-    androidTestImplementation("androidx.fragment:fragment-testing:1.4.0")
+    debugImplementation("androidx.test.ext:junit:1.1.5")
+    debugImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    debugImplementation ("androidx.test:rules:1.4.0")
+    debugImplementation("androidx.fragment:fragment-testing:1.4.0")
 
     constraints {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
