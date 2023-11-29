@@ -60,6 +60,7 @@ dependencies {
     annotationProcessor( "androidx.lifecycle:lifecycle-compiler:2.6.2")
 
     testImplementation("junit:junit:4.13.2")
+    testImplementation ("com.android.support.test:runner:1.0.2")
     debugImplementation("androidx.test.ext:junit:1.1.5")
     debugImplementation("androidx.test.espresso:espresso-core:3.5.1")
     debugImplementation ("androidx.test:rules:1.4.0")

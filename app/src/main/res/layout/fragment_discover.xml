@@ -50,4 +50,11 @@
         app:menu="@menu/bottom_menu"
         app:itemIconSize="30dp" />
 
+    <FrameLayout
+        android:id="@+id/DiscoverFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </FrameLayout>
 </RelativeLayout>

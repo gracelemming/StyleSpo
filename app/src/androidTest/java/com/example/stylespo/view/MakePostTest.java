@@ -12,11 +12,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.junit.Assert.assertNotNull;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -27,18 +29,42 @@ import com.example.stylespo.R;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import com.example.stylespo.view.HomeActivity;
+import com.example.stylespo.view.LoginAndSignUpActivity;
+import com.example.stylespo.view.LoginFragment;
+import com.example.stylespo.view.ProfileFragment;
+import com.example.stylespo.view.DiscoverFragment;
+
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class MakePostTest {
+    private  HomepageFragment mHomepageFragment;
 
     @Rule
     public ActivityScenarioRule<LoginAndSignUpActivity> mActivityScenarioRule =
             new ActivityScenarioRule<>(LoginAndSignUpActivity.class);
 
+    public MakePostTest() {
+        // Initialization code, if needed
+    }
+    @Before
+    public void setup() {
+        // Launch the fragment in a container
+        try (FragmentScenario<HomepageFragment> scenario = FragmentScenario.launchInContainer(HomepageFragment.class)) {
+            scenario.onFragment(fragment -> {
+                mHomepageFragment = fragment;
+                assertNotNull(mHomepageFragment);  // Assuming you want to assert that the fragment is not null
+
+                // Replace with the actual login button ID
+
+            });
+        }
+    }
     @Test
     public void makePostTest() {
         ViewInteraction bottomNavigationItemView = onView(

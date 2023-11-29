@@ -29,6 +29,10 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import com.example.stylespo.view.HomepageFragment;
+import com.example.stylespo.view.HomeActivity;
+import com.example.stylespo.view.LoginAndSignUpActivity;
+import com.example.stylespo.view.LoginFragment;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -42,39 +46,27 @@ public class LoginSuccess {
     public void loginSuccess() {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.email),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.activity_main),
-                                        0),
-                                1),
+
                         isDisplayed()));
         appCompatEditText.perform(replaceText("g.lemming13@gmail.com"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.password),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.activity_main),
-                                        0),
-                                2),
+
                         isDisplayed()));
         appCompatEditText2.perform(replaceText("password"), closeSoftKeyboard());
 
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.log_in_button), withText("LOGIN"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.activity_main),
-                                        0),
-                                3),
+
                         isDisplayed()));
         materialButton.perform(click());
 
-        ViewInteraction frameLayout = onView(
-                allOf(withId(R.id.homepage_frag_container),
-                        withParent(withParent(withId(R.id.activity_home))),
+
+        ViewInteraction imageView = onView(
+                allOf(withId(R.id.profile_image_view),
                         isDisplayed()));
-        frameLayout.check(matches(isDisplayed()));
+        imageView.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(
