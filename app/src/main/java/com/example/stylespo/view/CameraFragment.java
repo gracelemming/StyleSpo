@@ -146,7 +146,59 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
                 }
             }
     );
+    private void uploadImage(Uri filePath) {
+        if (filePath != null) {
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), filePath);
 
+                // Create a temporary file to store the compressed image
+                File compressedFile = createImageFile();
+
+                // Write the resized bitmap to the temporary file
+                FileOutputStream fos = new FileOutputStream(compressedFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, fos);
+                fos.close();
+
+                // Get the URI of the compressed image
+                Uri compressedUri = Uri.fromFile(compressedFile);
+
+                // Upload the compressed image to Firebase Storage
+                StorageReference fileRef = storageReferenceFolder.child("today_image.jpg");
+                fileRef.putFile(compressedUri)
+                        .addOnSuccessListener(taskSnapshot -> {
+                            // Handle successful upload
+                            Toast.makeText(requireActivity(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                            DocumentReference documentReference = db.collection("tags").document(userID);
+                            Map<String, Object> images = new HashMap<>();
+                            images.put("tag", tag.getText().toString().toLowerCase());
+                            documentReference.set(images)
+                                    .addOnSuccessListener(unused -> Log.d("TAG", "On Success Images created for " + userID))
+                                    .addOnFailureListener(e -> {
+                                        // Handle upload failure
+                                        Toast.makeText(requireActivity(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        });
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(requireActivity(), "Error compressing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(requireActivity(), "No File Selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create a unique file name for the compressed image
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String fileName = "IMG_COMPRESSED_" + timestamp + ".jpg";
+
+        // Create a file to store the compressed image
+        File compressedFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
+
+        return compressedFile;
+    }
 
 
     private String getFileExtension(Uri uri) {
@@ -155,30 +207,6 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
         return mime.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    private void uploadImage(Uri filePath) {
-        if (filePath != null) {
-            StorageReference fileRef = storageReferenceFolder.child("today_image." + getFileExtension(filePath));
-            fileRef.putFile(filePath)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        // Handle successful upload
-                        Toast.makeText(requireActivity(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                        DocumentReference documentReference = db.collection("tags").document(userID);
-                        Map<String, Object> images = new HashMap<>();
-                        images.put("tag", tag.getText().toString().toLowerCase());
-                        documentReference.set(images).addOnSuccessListener(new OnSuccessListener<Void>() {
 
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Log.d("TAG", "On Success Images created for " + userID);
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
-                                    // Handle upload failure
-                                    Toast.makeText(requireActivity(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                });
-                    });
-        } else {
-            Toast.makeText(requireActivity(), "No File Selected", Toast.LENGTH_SHORT).show();
-        }
-    }
+
 }
