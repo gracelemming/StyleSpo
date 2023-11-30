@@ -5,6 +5,7 @@ import static android.app.Activity.RESULT_OK;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -45,9 +46,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -302,18 +306,50 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
     }
     private void uploadImage(Uri filePath) {
         if (filePath != null) {
-            StorageReference fileRef = storageReferenceFolder.child("profile_image." + getFileExtension(filePath));
-            fileRef.putFile(filePath)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        // Handle successful upload
-                        Toast.makeText(requireActivity(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
-                        displayProfileImage();
-                    })
-                    .addOnFailureListener(e -> {
-                                    // Handle upload failure
-                                    Toast.makeText(requireActivity(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                });
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), filePath);
+
+                // Create a temporary file to store the compressed image
+                File compressedFile = createImageFile();
+
+                // Write the resized bitmap to the temporary file
+                FileOutputStream fos = new FileOutputStream(compressedFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, fos);
+                fos.close();
+
+                // Get the URI of the compressed image
+                Uri compressedUri = Uri.fromFile(compressedFile);
+
+                StorageReference fileRef = storageReferenceFolder.child("profile_image." + getFileExtension(filePath));
+                fileRef.putFile(compressedUri)
+                        .addOnSuccessListener(taskSnapshot -> {
+                            // Handle successful upload
+                            Toast.makeText(requireActivity(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                            displayProfileImage();
+                        })
+                        .addOnFailureListener(e -> {
+                            // Handle upload failure
+                            Toast.makeText(requireActivity(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(requireActivity(), "Error compressing image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
         }
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create a unique file name for the compressed image
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String fileName = "IMG_COMPRESSED_" + timestamp + ".jpg";
+
+        // Create a file to store the compressed image
+        File compressedFile = new File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
+
+        return compressedFile;
     }
 
 
