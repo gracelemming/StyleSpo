@@ -8,6 +8,8 @@ android {
     namespace = "com.example.stylespo"
     compileSdk = 34
 
+
+
     defaultConfig {
         applicationId = "com.example.stylespo"
         minSdk = 24
