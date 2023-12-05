@@ -91,7 +91,14 @@ public class ProfileFragment extends Fragment  implements View.OnClickListener {
         userID = mAuth.getUid();
         // Create a storage reference from our app
         storageReference = storage.getReference();
-        storageReferenceFolder = storageReference.child(userID);
+
+        if (userID != null && !userID.isEmpty()) {
+            storageReferenceFolder = storageReference.child(userID);
+        } else {
+            // Handle the case where userID is null or empty
+            Log.e("ProfileFragment", "userID is null or empty");
+        }
+
         Glide.get(requireContext()).getRegistry().prepend(StorageReference.class, InputStream.class, new StorageReferenceModelLoaderFactory());
     }
 

@@ -61,6 +61,9 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     annotationProcessor( "androidx.lifecycle:lifecycle-compiler:2.6.2")
 
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.4.0")
+
     testImplementation("junit:junit:4.13.2")
     testImplementation ("com.android.support.test:runner:1.0.2")
     debugImplementation("androidx.test.ext:junit:1.1.5")
